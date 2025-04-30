@@ -13,20 +13,29 @@ class App:
         self.root.withdraw()
 
     def create_widgets(self):
+        # Up container with grid
+        header = tk.Frame(self.root)
+        header.pack(fill=tk.X, pady=10, padx=10)
+
+        header.columnconfigure(0, weight=1)
+        header.columnconfigure(1, weight=0)
+        header.columnconfigure(2, weight=0)
+
         # Welcome Label
-        title = tk.Label(
-            self.root, text="Sitios en revisión", font=("Arial", 18))
-        title.pack(pady=20)
+        title = tk.Label(header, text="Sitios en revisión", font=("Arial", 18))
+        title.grid(row=0, column=0, sticky="w")
+
+        # Button for refresh
+        refresh_button = tk.Button(
+            header, text="🪄", font=("Arial", 14), relief="flat", bd=0, command=self.open_config
+        )
+        refresh_button.grid(row=0, column=1, padx=5)
 
         # Button for open conf
         config_button = tk.Button(
-            self.root, text="⚙️", font=(14), command=self.open_config)
-        config_button.pack(pady=10)
-
-        # Button for refresh
-        config_button = tk.Button(
-            self.root, text="🪄", font=(14), command=self.open_config)
-        config_button.pack(pady=10)
+            header, text="⚙️", font=("Arial", 14), relief="flat", bd=0, command=self.open_config
+        )
+        config_button.grid(row=0, column=2)
 
         # Placeholder for table
         placeholder = tk.Label(
