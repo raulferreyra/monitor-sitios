@@ -15,12 +15,17 @@ class App:
     def create_widgets(self):
         # Welcome Label
         title = tk.Label(
-            self.root, text="US - Monitor de Sitios", font=("Arial", 24))
-        title.pack(pady=30)
+            self.root, text="Sitios en revisión", font=("Arial", 18))
+        title.pack(pady=20)
 
         # Button for open conf
-        config_button = tk.Button(self.root, text="Configuración", font=(
-            "Arial", 14), command=self.open_config)
+        config_button = tk.Button(
+            self.root, text="⚙️", font=(14), command=self.open_config)
+        config_button.pack(pady=10)
+
+        # Button for refresh
+        config_button = tk.Button(
+            self.root, text="🪄", font=(14), command=self.open_config)
         config_button.pack(pady=10)
 
         # Placeholder for table
