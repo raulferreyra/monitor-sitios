@@ -35,7 +35,8 @@ class App:
     def hide_window(self):
         # Hide Main Window
         self.root.withdraw()
-        self.show_tray_icon()
+        if not hasattr(self, 'tray_icon') or self.tray_icon is None:
+            self.show_tray_icon()
 
     def create_widgets(self):
         # Up container with grid
@@ -73,6 +74,7 @@ class App:
         self.root.geometry("800x600")
         self.root.protocol("WM_DELETE_WINDOW", self.hide_window)
 
+        self.tray_icon = None
         try:
             self.icon_image = Image.open("favicon.png")
         except Exception as e:
