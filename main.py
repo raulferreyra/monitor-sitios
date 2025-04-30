@@ -1,8 +1,32 @@
 import tkinter as tk
+import threading
+import pystray
+from PIL import Image
 from tkinter import messagebox
 
 
 class App:
+    def show_window(self, _=None):
+        self.root.after(0, self.root.deiconify)
+        if self.tray_icon:
+            self.tray_icon.stop()
+            self.tray_icon = None
+
+    def quit_app(self, _=None):
+        if self.tray_icon:
+            self.tray_icon.stop()
+        self.root.quit()
+
+    def show_tray_icon(self):
+        if self.tray_icon is None:
+            menu = pystray.Menu(
+                pystray.MenuItem("Restaurar", self.show_window),
+                pystray.MenuItem("Salir", self.quit_app)
+            )
+            self.tray_icon = pystray.Icon(
+                "us_monitor", self.icon_image, "US - Monitor de Sitios", menu)
+            threading.Thread(target=self.tray_icon.run, daemon=True).start()
+
     def open_config(self):
         # This method will replace the configuration modal
         messagebox.showinfo(
@@ -47,6 +71,9 @@ class App:
         self.root.title("US - Monitor de Sitios")
         self.root.geometry("800x600")
         self.root.protocol("WM_DELETE_WINDOW", self.hide_window)
+
+        self.icon_image = Image.open("favicon.ico")
+        self.tray_icon = None
 
         self.create_widgets()
 
