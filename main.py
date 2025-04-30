@@ -72,7 +72,7 @@ class App:
         self.root.geometry("800x600")
         self.root.protocol("WM_DELETE_WINDOW", self.hide_window)
 
-        self.icon_image = Image.open("favicon.ico")
+        self.icon_image = Image.open("favicon.png")
         self.tray_icon = None
 
         self.create_widgets()
