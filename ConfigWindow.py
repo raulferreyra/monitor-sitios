@@ -2,6 +2,8 @@ import tkinter as tk
 import os
 import json
 
+from tkinter import messagebox
+
 CONFIG_FILE = "config.json"
 
 
@@ -57,3 +59,16 @@ class ConfigWindow:
         add_button = tk.Button(
             form_frame, text="Guardar", command=self.add_entry)
         add_button.grid(row=0, column=4, padx=5)
+
+    def add_entry(self):
+        dominio = self.new_domain_entry.get().strip()
+        tiempo = self.new_time_entry.get().strip()
+
+        if dominio and tiempo.isdigit():
+            self.data.append({"dominio": dominio, "tiempo": int(tiempo)})
+            with open(CONFIG_FILE, "w") as f:
+                json.dump(self.data, f, indent=4)
+            self.master.destroy()
+            ConfigWindow(self.master.master)  # Recarga la ventana
+        else:
+            tk.messagebox.showerror("Error", "Dominio o tiempo inválido.")
