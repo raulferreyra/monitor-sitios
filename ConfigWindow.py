@@ -9,7 +9,17 @@ CONFIG_FILE = "config.json"
 
 
 class ConfigWindow:
+    """
+    Class for configuring monitored domains in a Tkinter application.
+    This class provides a GUI for adding, editing, and deleting monitored domains.
+    """
+
     def __init__(self, master):
+        """
+        Initializes the ConfigWindow class.
+        Args:
+            master (tk.Tk): The parent Tkinter window.
+        """
         self.master = tk.Toplevel(master)
         self.master.title("Configuración de Sitios")
         self.master.geometry("500x400")
@@ -19,6 +29,9 @@ class ConfigWindow:
         self.create_table()
 
     def load_config(self):
+        """
+        Loads the configuration from the JSON file.
+        """
         if not os.path.exists(CONFIG_FILE):
             with open(CONFIG_FILE, "w") as f:
                 json.dump([], f)
@@ -30,7 +43,10 @@ class ConfigWindow:
                 self.data = []
 
     def create_table(self):
-        # Eliminar tabla anterior si existe
+        """
+        Creates the table for displaying monitored domains and their times.
+        This method also creates the form for adding new domains.
+        """
         if hasattr(self, "table_frame"):
             self.table_frame.destroy()
 
@@ -40,7 +56,6 @@ class ConfigWindow:
         self.table_frame = tk.Frame(self.master)
         self.table_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Encabezados opcionales
         tk.Label(self.table_frame, text="Dominio", font=(
             "Arial", 10, "bold")).grid(row=0, column=0, padx=5)
         tk.Label(self.table_frame, text="Tiempo (s)", font=(
@@ -81,6 +96,10 @@ class ConfigWindow:
         add_button.grid(row=0, column=4, padx=5)
 
     def add_entry(self):
+        """
+        Adds a new domain entry to the configuration file.
+        This method validates the input and checks for duplicates before saving.
+        """
         dominio = self.new_domain_entry.get().strip()
         tiempo = self.new_time_entry.get().strip()
 
@@ -99,6 +118,12 @@ class ConfigWindow:
         self.refresh_table()
 
     def delete_entry(self, index):
+        """
+        Deletes a domain entry from the configuration file.
+        This method prompts the user for confirmation before deleting.  
+        Args:
+            index (int): The index of the domain entry to delete.
+        """
         confirm = messagebox.askyesno(
             "Confirmar eliminación", "¿Estás seguro de eliminar este dominio?")
         if confirm:
@@ -109,7 +134,12 @@ class ConfigWindow:
             ConfigWindow(self.master.master)
 
     def edit_entry(self, index):
-        # Delete custom widgets in this row
+        """
+        Edits an existing domain entry in the configuration file.
+        This method allows the user to modify the domain and time values.
+        Args:
+            index (int): The index of the domain entry to edit.
+        """
         for widget in self.table_frame.grid_slaves(row=index):
             widget.destroy()
 
@@ -135,6 +165,14 @@ class ConfigWindow:
         Tooltip(cancel_button, "Cancelar")
 
     def save_edit(self, index, dominio, tiempo):
+        """
+        Saves the edited domain entry to the configuration file.
+        This method validates the input and checks for duplicates before saving.
+        Args:
+            index (int): The index of the domain entry to edit.
+            dominio (str): The new domain value.
+            tiempo (str): The new time value.
+        """
         dominio = dominio.strip()
         tiempo = tiempo.strip()
 
@@ -155,6 +193,10 @@ class ConfigWindow:
         self.refresh_table()
 
     def refresh_table(self):
+        """
+        Refreshes the table to reflect the current configuration.
+        This method clears the existing table and re-creates it with updated data.
+        """
         if hasattr(self, "table_frame"):
             self.table_frame.destroy()
         if hasattr(self, "form_frame"):
