@@ -4,7 +4,18 @@ from tkinter import ttk
 
 
 class DomainMonitor:
+    """
+    Class for monitoring domains in a Tkinter application.
+    This class provides a GUI for displaying monitored domains and their times.
+    """
+
     def __init__(self, parent, config_path="config.json"):
+        """
+        Initializes the DomainMonitor class.
+        Args:
+            parent (tk.Tk): The parent Tkinter window.
+            config_path (str): Path to the configuration file containing monitored domains.
+        """
         self.parent = parent
         self.config_path = config_path
         self.tree = None
@@ -12,6 +23,11 @@ class DomainMonitor:
         self.setup_tree()
 
     def load_domains(self):
+        """
+        Loads the monitored domains from the configuration file.
+        Returns:
+            list: A list of dictionaries containing domain information.
+        """
         try:
             with open(self.config_path, "r") as file:
                 return json.load(file)
@@ -20,6 +36,10 @@ class DomainMonitor:
             return []
 
     def setup_tree(self):
+        """
+        Sets up the Treeview widget for displaying monitored domains.
+        This method creates the Treeview widget and populates it with the monitored domains.
+        """
         self.tree = ttk.Treeview(self.parent)
         self.tree.heading("#0", text="Dominios monitoreados")
         self.tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
