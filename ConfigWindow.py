@@ -2,6 +2,8 @@ import tkinter as tk
 import os
 import json
 
+from tkinter import messagebox
+
 CONFIG_FILE = "config.json"
 
 
@@ -67,6 +69,7 @@ class ConfigWindow:
             with open(CONFIG_FILE, "w") as f:
                 json.dump(self.data, f, indent=4)
             self.master.destroy()
-            ConfigWindow(self.master.master)  # Recarga la ventana
+            # Refresh window
+            ConfigWindow(self.master.master)
         else:
             tk.messagebox.showerror("Error", "Dominio o tiempo inválido.")
