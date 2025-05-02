@@ -135,3 +135,6 @@ class ConfigWindow:
             ConfigWindow(self.master.master)
         else:
             messagebox.showerror("Error", "Dominio o tiempo inválido.")
+
+    def refresh_table(self):
+        self.create_table()
