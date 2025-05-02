@@ -24,8 +24,13 @@ class App:
                 pystray.MenuItem("Salir", self.quit_app)
             )
             self.tray_icon = pystray.Icon(
-                "us_monitor", self.icon_image, "US - Monitor de Sitios", menu)
-            threading.Thread(target=self.tray_icon.run, daemon=True).start()
+                "us_monitor",
+                self.icon_image,
+                "US - Monitor de Sitios",
+                menu,
+                on_click=self.show_window
+            )
+            self.tray_icon.run_detached()
 
     def open_config(self):
         # This method will replace the configuration modal
