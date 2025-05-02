@@ -1,7 +1,5 @@
 import tkinter as tk
-import threading
-import pystray
-from PIL import Image
+from TrayManager import TrayManager
 from ConfigWindow import ConfigWindow
 from utils import Tooltip
 
@@ -9,42 +7,20 @@ from utils import Tooltip
 class App:
     def show_window(self, _=None):
         self.root.after(0, self.root.deiconify)
-        if self.tray_icon:
-            self.tray_icon.stop()
-            self.tray_icon = None
+        self.tray.stop_tray_icon()
 
     def quit_app(self, _=None):
-        if self.tray_icon:
-            self.tray_icon.stop()
+        self.tray.stop_tray_icon()
         self.root.quit()
 
-    def show_tray_icon(self):
-        if self.tray_icon is None:
-            menu = pystray.Menu(
-                pystray.MenuItem("Restaurar", self.show_window),
-                pystray.MenuItem("Salir", self.quit_app)
-            )
-            self.tray_icon = pystray.Icon(
-                "us_monitor",
-                self.icon_image,
-                "US - Monitor de Sitios",
-                menu,
-                on_click=self.show_window
-            )
-            self.tray_icon.run_detached()
-
     def open_config(self):
-        # This method open the configuration modal
         ConfigWindow(self.root)
 
     def hide_window(self):
-        # Hide Main Window
         self.root.withdraw()
-        if not hasattr(self, 'tray_icon') or self.tray_icon is None:
-            self.show_tray_icon()
+        self.tray.show_tray_icon()
 
     def create_widgets(self):
-        # Up container with grid
         header = tk.Frame(self.root)
         header.pack(fill=tk.X, pady=10, padx=10)
 
@@ -52,23 +28,19 @@ class App:
         header.columnconfigure(1, weight=0)
         header.columnconfigure(2, weight=0)
 
-        # Welcome Label
         title = tk.Label(header, text="Sitios en revisión", font=("Arial", 18))
         title.grid(row=0, column=0, sticky="w")
 
-        # Button for refresh
-        refresh_button = tk.Button(header, text="🔄", font=(
-            "Arial", 14), relief="flat", bd=0, command=self.open_config)
+        refresh_button = tk.Button(header, text="🔄", font=("Arial", 14),
+                                   relief="flat", bd=0, command=self.open_config)
         refresh_button.grid(row=0, column=1, padx=5)
         Tooltip(refresh_button, "Actualizar vista")
 
-        # Button for open conf
-        config_button = tk.Button(header, text="⚙️", font=(
-            "Arial", 14), relief="flat", bd=0, command=self.open_config)
+        config_button = tk.Button(header, text="⚙️", font=("Arial", 14),
+                                  relief="flat", bd=0, command=self.open_config)
         config_button.grid(row=0, column=2, padx=5)
         Tooltip(config_button, "Abrir configuración")
 
-        # Placeholder for table
         placeholder = tk.Label(
             self.root, text="Aquí se mostrarán los sitios monitoreados.", font=("Arial", 12))
         placeholder.pack(pady=20)
@@ -79,13 +51,7 @@ class App:
         self.root.geometry("800x600")
         self.root.protocol("WM_DELETE_WINDOW", self.hide_window)
 
-        self.tray_icon = None
-        try:
-            self.icon_image = Image.open("favicon.png")
-        except Exception as e:
-            print("Error cargando el icono:", e)
-            self.icon_image = None
-
+        self.tray = TrayManager(self)
         self.create_widgets()
 
 
