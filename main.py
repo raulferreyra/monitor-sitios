@@ -42,9 +42,7 @@ class App:
         config_button.grid(row=0, column=2, padx=5)
         Tooltip(config_button, "Abrir configuración")
 
-        placeholder = tk.Label(
-            self.root, text="Aquí se mostrarán los sitios monitoreados.", font=("Arial", 12))
-        placeholder.pack(pady=20)
+        self.domain_monitor = DomainMonitor(self.root)
 
     def __init__(self, root):
         self.root = root
