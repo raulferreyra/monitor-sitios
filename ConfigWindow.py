@@ -34,6 +34,9 @@ class ConfigWindow:
         if hasattr(self, "table_frame"):
             self.table_frame.destroy()
 
+        if hasattr(self, "form_frame"):
+            self.form_frame.destroy()
+
         self.table_frame = tk.Frame(self.master)
         self.table_frame.pack(fill=tk.BOTH, expand=True)
 
@@ -60,19 +63,21 @@ class ConfigWindow:
             Tooltip(delete_button, "Eliminar dominio")
 
         # Section for add new domain
-        form_frame = tk.Frame(self.master)
-        form_frame.pack(pady=20)
+        self.form_frame = tk.Frame(self.master)
+        self.form_frame.pack(pady=20)
 
-        tk.Label(form_frame, text="Dominio:").grid(row=0, column=0, padx=5)
-        self.new_domain_entry = tk.Entry(form_frame, width=30)
+        tk.Label(self.form_frame, text="Dominio:").grid(
+            row=0, column=0, padx=5)
+        self.new_domain_entry = tk.Entry(self.form_frame, width=30)
         self.new_domain_entry.grid(row=0, column=1, padx=5)
 
-        tk.Label(form_frame, text="Tiempo (s):").grid(row=0, column=2, padx=5)
-        self.new_time_entry = tk.Entry(form_frame, width=10)
+        tk.Label(self.form_frame, text="Tiempo (s):").grid(
+            row=0, column=2, padx=5)
+        self.new_time_entry = tk.Entry(self.form_frame, width=10)
         self.new_time_entry.grid(row=0, column=3, padx=5)
 
         add_button = tk.Button(
-            form_frame, text="Guardar", command=self.add_entry)
+            self.form_frame, text="Guardar", command=self.add_entry)
         add_button.grid(row=0, column=4, padx=5)
 
     def add_entry(self):
