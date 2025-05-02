@@ -3,6 +3,7 @@ import os
 import json
 
 from tkinter import messagebox
+from utils import Tooltip
 
 CONFIG_FILE = "config.json"
 
@@ -36,13 +37,21 @@ class ConfigWindow:
         tk.Label(header, text="Tiempo (s)", font=(
             "Arial", 12, "bold"), width=15).grid(row=0, column=1)
 
-        for i, item in enumerate(self.data):
-            row = tk.Frame(self.master)
-            row.pack(fill=tk.X, padx=10)
-            tk.Label(row, text=item.get("dominio", ""),
-                     anchor="w", width=30).grid(row=0, column=0)
-            tk.Label(row, text=item.get("tiempo", ""),
-                     width=15).grid(row=0, column=1)
+        for i, row in enumerate(self.data):
+            tk.Label(self.table_frame, text=row["dominio"], anchor="w", width=30).grid(
+                row=i, column=0, padx=5, sticky="w")
+            tk.Label(self.table_frame, text=row["tiempo"], anchor="center", width=10).grid(
+                row=i, column=1, padx=5)
+
+            edit_button = tk.Button(
+                self.table_frame, text="✏️", command=lambda idx=i: self.edit_entry(idx))
+            edit_button.grid(row=i, column=2, padx=5)
+            Tooltip(edit_button, "Actualizar dominio")
+
+            delete_button = tk.Button(
+                self.table_frame, text="🗑️", command=lambda idx=i: self.delete_entry(idx))
+            delete_button.grid(row=i, column=3, padx=5)
+            Tooltip(delete_button, "Eliminar dominio")
 
         # Section for add new domain
         form_frame = tk.Frame(self.master)
