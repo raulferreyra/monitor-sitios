@@ -135,15 +135,24 @@ class ConfigWindow:
         Tooltip(cancel_button, "Cancelar")
 
     def save_edit(self, index, dominio, tiempo):
-        if dominio and tiempo.isdigit():
-            self.data[index] = {
-                "dominio": dominio.strip(), "tiempo": int(tiempo.strip())}
-            with open(CONFIG_FILE, "w") as f:
-                json.dump(self.data, f, indent=4)
-            self.master.destroy()
-            ConfigWindow(self.master.master)
-        else:
+        dominio = dominio.strip()
+        tiempo = tiempo.strip()
+
+        if not dominio or not tiempo.isdigit():
             messagebox.showerror("Error", "Dominio o tiempo inválido.")
+            return
+
+        # Check for duplicates
+        for i, d in enumerate(self.data):
+            if i != index and d["dominio"].lower() == dominio.lower():
+                messagebox.showwarning(
+                    "Duplicado", "Ya existe otro dominio con ese nombre.")
+                return
+
+        self.data[index] = {"dominio": dominio, "tiempo": int(tiempo)}
+        with open(CONFIG_FILE, "w") as f:
+            json.dump(self.data, f, indent=4)
+        self.refresh_table()
 
     def refresh_table(self):
         self.create_table()
