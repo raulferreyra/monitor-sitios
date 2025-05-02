@@ -2,7 +2,16 @@ import tkinter as tk
 
 
 class Tooltip:
+    """
+    Class for creating tooltips for widgets in a Tkinter application.
+    """
+
     def __init__(self, widget, text):
+        """
+        Args:
+            widget (widget): Widget to which the tooltip will be attached.
+            text (str): Text to be displayed in the tooltip.
+        """
         self.widget = widget
         self.text = text
         self.tooltip = None
@@ -11,6 +20,12 @@ class Tooltip:
         widget.bind("<Leave>", self.hide_tooltip)
 
     def show_tooltip(self, event=None):
+        """
+        shows the tooltip when the mouse enters the widget.
+
+        Args:
+            event (tk.Event): Event object containing information about the event.
+        """
         if self.tooltip or not self.text:
             return
         x = self.widget.winfo_rootx() + 20
@@ -23,6 +38,12 @@ class Tooltip:
         label.pack()
 
     def hide_tooltip(self, event=None):
+        """
+        Hides the tooltip when the mouse leaves the widget.
+
+        Args:
+            event (tk.Event): Event object containing information about the event.
+        """
         if self.tooltip:
             self.tooltip.destroy()
             self.tooltip = None
