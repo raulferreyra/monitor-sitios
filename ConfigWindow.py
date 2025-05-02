@@ -2,8 +2,6 @@ import tkinter as tk
 import os
 import json
 
-from tkinter import messagebox
-
 CONFIG_FILE = "config.json"
 
 
