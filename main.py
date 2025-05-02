@@ -6,22 +6,51 @@ from utils import Tooltip
 
 
 class App:
+    """
+    Main application class for the Tkinter GUI.
+    This class initializes the main window, creates the tray icon,
+    and manages the application lifecycle.
+    """
+
     def show_window(self, _=None):
+        """
+        Shows the main window when the tray icon is clicked.
+        This method is called when the user clicks on the tray icon.
+        It restores the main window and stops the tray icon.
+        """
         self.root.after(0, self.root.deiconify)
         self.tray.stop_tray_icon()
 
     def quit_app(self, _=None):
+        """
+        Quits the application when the user selects "Quit" from the tray icon menu.
+        This method is called when the user selects "Quit" from the tray icon menu.
+        """
         self.tray.stop_tray_icon()
         self.root.quit()
 
     def open_config(self):
+        """
+        Opens the configuration window when the user clicks the config button.
+        This method is called when the user clicks the config button in the main window.
+        """
         ConfigWindow(self.root)
 
     def hide_window(self):
+        """
+        Hides the main window when the user closes it.
+        This method is called when the user closes the main window.
+        It hides the window and shows the tray icon.
+        """
         self.root.withdraw()
         self.tray.show_tray_icon()
 
     def create_widgets(self):
+        """
+        Creates the main widgets for the application.
+        This method creates the header, refresh button, config button,
+        and the domain monitor widget.
+        """
         header = tk.Frame(self.root)
         header.pack(fill=tk.X, pady=10, padx=10)
 
@@ -45,6 +74,11 @@ class App:
         self.domain_monitor = DomainMonitor(self.root)
 
     def __init__(self, root):
+        """
+        Initializes the main application class.
+        Args:
+            root (tk.Tk): The main Tkinter window.
+        """
         self.root = root
         self.root.title("US - Monitor de Sitios")
         self.root.geometry("800x600")
@@ -55,6 +89,10 @@ class App:
 
 
 if __name__ == "__main__":
+    """
+    Main function to run the application.
+    This function creates the main Tkinter window and starts the application.
+    """
     root = tk.Tk()
     root.iconbitmap("favicon.ico")
     app = App(root)
