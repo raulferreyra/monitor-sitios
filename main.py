@@ -3,6 +3,7 @@ import threading
 import pystray
 from PIL import Image
 from tkinter import messagebox
+from ConfigWindow import ConfigWindow
 
 
 class App:
@@ -33,9 +34,8 @@ class App:
             self.tray_icon.run_detached()
 
     def open_config(self):
-        # This method will replace the configuration modal
-        messagebox.showinfo(
-            "Configuración", "Aquí irá la ventana de configuración.")
+        # This method open the configuration modal
+        ConfigWindow(self.root)
 
     def hide_window(self):
         # Hide Main Window
