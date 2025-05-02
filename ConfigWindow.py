@@ -92,3 +92,29 @@ class ConfigWindow:
                 json.dump(self.data, f, indent=4)
             self.master.destroy()
             ConfigWindow(self.master.master)
+
+    def edit_entry(self, index):
+        # Delete custom widgets in this row
+        for widget in self.table_frame.grid_slaves(row=index):
+            widget.destroy()
+
+        dominio_actual = self.data[index]["dominio"]
+        tiempo_actual = self.data[index]["tiempo"]
+
+        dominio_entry = tk.Entry(self.table_frame, width=30)
+        dominio_entry.insert(0, dominio_actual)
+        dominio_entry.grid(row=index, column=0, padx=5)
+
+        tiempo_entry = tk.Entry(self.table_frame, width=10)
+        tiempo_entry.insert(0, str(tiempo_actual))
+        tiempo_entry.grid(row=index, column=1, padx=5)
+
+        save_button = tk.Button(self.table_frame, text="💾", command=lambda: self.save_edit(
+            index, dominio_entry.get(), tiempo_entry.get()))
+        save_button.grid(row=index, column=2, padx=5)
+        Tooltip(save_button, "Guardar")
+
+        cancel_button = tk.Button(
+            self.table_frame, text="❌", command=self.refresh_table)
+        cancel_button.grid(row=index, column=3, padx=5)
+        Tooltip(cancel_button, "Cancelar")
