@@ -53,7 +53,7 @@ class App:
 
         # Button for refresh
         refresh_button = tk.Button(
-            header, text="🪄", font=("Arial", 14), relief="flat", bd=0, command=self.open_config
+            header, text="🔄", font=("Arial", 14), relief="flat", bd=0, command=self.open_config
         )
         refresh_button.grid(row=0, column=1, padx=5)
 
