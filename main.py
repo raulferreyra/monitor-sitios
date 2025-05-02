@@ -2,7 +2,6 @@ import tkinter as tk
 import threading
 import pystray
 from PIL import Image
-from tkinter import messagebox
 from ConfigWindow import ConfigWindow
 from utils import Tooltip
 
