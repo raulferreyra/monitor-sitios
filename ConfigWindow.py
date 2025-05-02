@@ -41,3 +41,19 @@ class ConfigWindow:
                      anchor="w", width=30).grid(row=0, column=0)
             tk.Label(row, text=item.get("tiempo", ""),
                      width=15).grid(row=0, column=1)
+
+        # Section for add new domain
+        form_frame = tk.Frame(self.master)
+        form_frame.pack(pady=20)
+
+        tk.Label(form_frame, text="Dominio:").grid(row=0, column=0, padx=5)
+        self.new_domain_entry = tk.Entry(form_frame, width=30)
+        self.new_domain_entry.grid(row=0, column=1, padx=5)
+
+        tk.Label(form_frame, text="Tiempo (s):").grid(row=0, column=2, padx=5)
+        self.new_time_entry = tk.Entry(form_frame, width=10)
+        self.new_time_entry.grid(row=0, column=3, padx=5)
+
+        add_button = tk.Button(
+            form_frame, text="Guardar", command=self.add_entry)
+        add_button.grid(row=0, column=4, padx=5)
