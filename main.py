@@ -1,6 +1,7 @@
 import tkinter as tk
 from TrayManager import TrayManager
 from ConfigWindow import ConfigWindow
+from DomainMonitor import DomainMonitor
 from utils import Tooltip
 
 
