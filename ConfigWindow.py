@@ -30,12 +30,18 @@ class ConfigWindow:
                 self.data = []
 
     def create_table(self):
-        header = tk.Frame(self.master)
-        header.pack(fill=tk.X, pady=10)
-        tk.Label(header, text="Dominio", font=("Arial", 12, "bold"),
-                 width=30, anchor="w").grid(row=0, column=0)
-        tk.Label(header, text="Tiempo (s)", font=(
-            "Arial", 12, "bold"), width=15).grid(row=0, column=1)
+        # Eliminar tabla anterior si existe
+        if hasattr(self, "table_frame"):
+            self.table_frame.destroy()
+
+        self.table_frame = tk.Frame(self.master)
+        self.table_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Encabezados opcionales
+        tk.Label(self.table_frame, text="Dominio", font=(
+            "Arial", 10, "bold")).grid(row=0, column=0, padx=5)
+        tk.Label(self.table_frame, text="Tiempo (s)", font=(
+            "Arial", 10, "bold")).grid(row=0, column=1, padx=5)
 
         for i, row in enumerate(self.data):
             tk.Label(self.table_frame, text=row["dominio"], anchor="w", width=30).grid(
