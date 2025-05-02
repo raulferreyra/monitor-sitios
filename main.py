@@ -4,6 +4,7 @@ import pystray
 from PIL import Image
 from tkinter import messagebox
 from ConfigWindow import ConfigWindow
+from utils import Tooltip
 
 
 class App:
@@ -57,16 +58,16 @@ class App:
         title.grid(row=0, column=0, sticky="w")
 
         # Button for refresh
-        refresh_button = tk.Button(
-            header, text="🔄", font=("Arial", 14), relief="flat", bd=0, command=self.open_config
-        )
+        refresh_button = tk.Button(header, text="🔄", font=(
+            "Arial", 14), relief="flat", bd=0, command=self.open_config)
         refresh_button.grid(row=0, column=1, padx=5)
+        Tooltip(refresh_button, "Actualizar vista")
 
         # Button for open conf
-        config_button = tk.Button(
-            header, text="⚙️", font=("Arial", 14), relief="flat", bd=0, command=self.open_config
-        )
-        config_button.grid(row=0, column=2)
+        config_button = tk.Button(header, text="⚙️", font=(
+            "Arial", 14), relief="flat", bd=0, command=self.open_config)
+        config_button.grid(row=0, column=2, padx=5)
+        Tooltip(config_button, "Abrir configuración")
 
         # Placeholder for table
         placeholder = tk.Label(
