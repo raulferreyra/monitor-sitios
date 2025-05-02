@@ -118,3 +118,14 @@ class ConfigWindow:
             self.table_frame, text="❌", command=self.refresh_table)
         cancel_button.grid(row=index, column=3, padx=5)
         Tooltip(cancel_button, "Cancelar")
+
+    def save_edit(self, index, dominio, tiempo):
+        if dominio and tiempo.isdigit():
+            self.data[index] = {
+                "dominio": dominio.strip(), "tiempo": int(tiempo.strip())}
+            with open(CONFIG_FILE, "w") as f:
+                json.dump(self.data, f, indent=4)
+            self.master.destroy()
+            ConfigWindow(self.master.master)
+        else:
+            messagebox.showerror("Error", "Dominio o tiempo inválido.")
