@@ -82,3 +82,13 @@ class ConfigWindow:
             ConfigWindow(self.master.master)
         else:
             tk.messagebox.showerror("Error", "Dominio o tiempo inválido.")
+
+    def delete_entry(self, index):
+        confirm = messagebox.askyesno(
+            "Confirmar eliminación", "¿Estás seguro de eliminar este dominio?")
+        if confirm:
+            self.data.pop(index)
+            with open(CONFIG_FILE, "w") as f:
+                json.dump(self.data, f, indent=4)
+            self.master.destroy()
+            ConfigWindow(self.master.master)
