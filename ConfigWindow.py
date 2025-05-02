@@ -155,4 +155,8 @@ class ConfigWindow:
         self.refresh_table()
 
     def refresh_table(self):
+        if hasattr(self, "table_frame"):
+            self.table_frame.destroy()
+        if hasattr(self, "form_frame"):
+            self.form_frame.destroy()
         self.create_table()
