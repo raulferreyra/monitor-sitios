@@ -84,15 +84,19 @@ class ConfigWindow:
         dominio = self.new_domain_entry.get().strip()
         tiempo = self.new_time_entry.get().strip()
 
-        if dominio and tiempo.isdigit():
-            self.data.append({"dominio": dominio, "tiempo": int(tiempo)})
-            with open(CONFIG_FILE, "w") as f:
-                json.dump(self.data, f, indent=4)
-            self.master.destroy()
-            # Refresh window
-            ConfigWindow(self.master.master)
-        else:
+        if not dominio or not tiempo.isdigit():
             tk.messagebox.showerror("Error", "Dominio o tiempo inválido.")
+            return
+
+        if any(d["dominio"].lower().strip() == dominio.lower() for d in self.data):
+            tk.messagebox.showwarning(
+                "Duplicado", "Este dominio ya está en la lista.")
+            return
+
+        self.data.append({"dominio": dominio, "tiempo": int(tiempo)})
+        with open(CONFIG_FILE, "w") as f:
+            json.dump(self.data, f, indent=4)
+        self.refresh_table()
 
     def delete_entry(self, index):
         confirm = messagebox.askyesno(
