@@ -14,16 +14,17 @@ class DomainMonitor:
     def load_domains(self):
         try:
             with open(self.config_path, "r") as file:
-                data = json.load(file)
-                return data.get("domains", [])
+                return json.load(file)
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"Error cargando dominios: {e}")
             return []
 
     def setup_tree(self):
         self.tree = ttk.Treeview(self.parent)
-        self.tree.heading("#0", text="Dominios")
+        self.tree.heading("#0", text="Dominios monitoreados")
         self.tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         for domain in self.domains:
-            self.tree.insert("", tk.END, text=domain.get("url", "Sin nombre"))
+            url = domain.get("dominio", "Desconocido")
+            tiempo = domain.get("tiempo", "?")
+            self.tree.insert("", tk.END, text=f"{url} ({tiempo}s)")
