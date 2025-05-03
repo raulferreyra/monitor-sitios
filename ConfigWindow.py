@@ -14,16 +14,18 @@ class ConfigWindow:
     This class provides a GUI for adding, editing, and deleting monitored domains.
     """
 
-    def __init__(self, master):
+    def __init__(self, master, domain_monitor=None):
         """
         Initializes the ConfigWindow class.
         Args:
             master (tk.Tk): The parent Tkinter window.
+            domain_monitor (DomainMonitor): Reference to the domain monitor instance.
         """
         self.master = tk.Toplevel(master)
         self.master.title("Configuración de Sitios")
         self.master.geometry("500x400")
         self.data = []
+        self.domain_monitor = domain_monitor
 
         self.load_config()
         self.create_table()
@@ -202,3 +204,6 @@ class ConfigWindow:
         if hasattr(self, "form_frame"):
             self.form_frame.destroy()
         self.create_table()
+
+        if self.domain_monitor:
+            self.domain_monitor.reload()
