@@ -132,8 +132,7 @@ class ConfigWindow:
             self.data.pop(index)
             with open(CONFIG_FILE, "w") as f:
                 json.dump(self.data, f, indent=4)
-            self.master.destroy()
-            ConfigWindow(self.master.master)
+            self.refresh_table()
 
     def edit_entry(self, index):
         """
