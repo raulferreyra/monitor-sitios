@@ -34,7 +34,7 @@ class App:
         Opens the configuration window when the user clicks the config button.
         This method is called when the user clicks the config button in the main window.
         """
-        ConfigWindow(self.root)
+        ConfigWindow(self.root, self.domain_monitor)
 
     def hide_window(self):
         """
