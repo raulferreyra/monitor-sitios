@@ -48,3 +48,16 @@ class DomainMonitor:
             url = domain.get("dominio", "Desconocido")
             tiempo = domain.get("tiempo", "?")
             self.tree.insert("", tk.END, text=f"{url} ({tiempo}s)")
+
+    def reload(self):
+        """
+        Reloads the domain list and updates the Treeview.
+        """
+        self.domains = self.load_domains()
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        for domain in self.domains:
+            url = domain.get("dominio", "Desconocido")
+            tiempo = domain.get("tiempo", "?")
+            self.tree.insert("", tk.END, text=f"{url} ({tiempo}s)")
