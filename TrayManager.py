@@ -4,7 +4,19 @@ from pystray import MenuItem as item
 
 
 class TrayManager:
+    """
+    Class for managing the system tray icon in a Tkinter application.
+    This class provides methods to show and hide the tray icon,
+    as well as to handle click events on the icon.
+    """
+
     def __init__(self, app, icon_path="favicon.png"):
+        """
+        Initializes the TrayManager class.
+        Args:
+            app (App): Reference to the main application instance.
+            icon_path (str): Path to the icon image file.
+        """
         self.app = app
         self.tray_icon = None
         self.icon_image = None
@@ -15,6 +27,10 @@ class TrayManager:
             print("Error cargando el icono:", e)
 
     def show_tray_icon(self):
+        """
+        Shows the tray icon in the system tray.
+        This method creates the tray icon and sets up the menu items.
+        """
         if self.tray_icon is None and self.icon_image:
             menu = pystray.Menu(
                 item("Restaurar", self.app.show_window),
@@ -30,6 +46,10 @@ class TrayManager:
             self.tray_icon.run_detached()
 
     def stop_tray_icon(self):
+        """
+        Stops the tray icon and removes it from the system tray.
+        This method is called when the application is closed or exited.
+        """
         if self.tray_icon:
             self.tray_icon.stop()
             self.tray_icon = None
