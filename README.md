@@ -34,7 +34,7 @@ Domain Monitor es una aplicación de escritorio construida con Python y Tkinter,
 3. Ejecuta la app:
 
    ```bash
-    python main.py
+   python main.py
     ```
 
 ## 💡 Próximas funciones (en desarrollo)
