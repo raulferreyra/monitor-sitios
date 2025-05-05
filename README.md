@@ -25,7 +25,7 @@ Domain Monitor es una aplicación de escritorio construida con Python y Tkinter,
    cd domain-monitor
     ```
 
-2. pip install -r requirements.txt
+2. Instala las dependencias:
 
    ```bash
    pip install -r requirements.txt
