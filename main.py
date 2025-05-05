@@ -29,6 +29,13 @@ class App:
         self.tray.stop_tray_icon()
         self.root.quit()
 
+    def reload_monitor(self):
+        """
+        Reloads the domain monitor when the user clicks the refresh button.
+        This method is called when the user clicks the refresh button in the main window.
+        """
+        DomainMonitor(self.root, self.domain_monitor.config_path).reload()
+
     def open_config(self):
         """
         Opens the configuration window when the user clicks the config button.
@@ -62,7 +69,7 @@ class App:
         title.grid(row=0, column=0, sticky="w")
 
         refresh_button = tk.Button(header, text="🔄", font=("Arial", 14),
-                                   relief="flat", bd=0, command=self.open_config)
+                                   relief="flat", bd=0, command=self.reload_monitor)
         refresh_button.grid(row=0, column=1, padx=5)
         Tooltip(refresh_button, "Actualizar vista")
 
