@@ -28,34 +28,6 @@ class DomainMonitor:
         self.domains = self.load_domains()
         self.setup_tree()
 
-    def view_domain(url, time, update_callback, log_callback):
-        """
-        Monitors a domain and updates the GUI with the status.
-        Args:
-            url (str): The URL of the domain to monitor.
-            time (int): The time interval for monitoring in seconds.
-            update_callback (function): Callback function to update the GUI.
-            log_callback (function): Callback function to log errors.
-        """
-        while True:
-            try:
-                response = requests.get(url, timeout=time)
-                status = response.status_code
-
-                if status <= status < 300:
-                    update_callback(url, status, "green", "OK ✅")
-                else:
-                    error_msg = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {url} Error {status}: {response.reason}"
-                    update_callback(url, status, "red", f"Error: ❌ ({status})")
-                    log_callback(error_msg)
-
-            except requests.RequestException as e:
-                error_msg = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {url} {type(e).__name__}: {str(e)}"
-                update_callback(url, None, "red", f"Error.")
-                log_callback(error_msg)
-
-            time.sleep(time)
-
     def load_domains(self):
         """
         Loads the monitored domains from the configuration file.
