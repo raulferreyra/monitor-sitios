@@ -54,7 +54,7 @@ class DomainMonitor:
         }
 
         try:
-            with open(self.error_path, "a") as f:
+            with open(self.error_path, "r") as f:
                 errores = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             errores = []
@@ -71,11 +71,7 @@ class DomainMonitor:
         self.tree = ttk.Treeview(self.parent)
         self.tree.heading("#0", text="Dominios monitoreados")
         self.tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-
-        for domain in self.domains:
-            url = domain.get("dominio", "Desconocido")
-            tiempo = domain.get("tiempo", "?")
-            self.tree.insert("", tk.END, text=f"{url} ({tiempo}s)")
+        self.reload()
 
     def reload(self):
         """
@@ -88,4 +84,27 @@ class DomainMonitor:
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
             tiempo = domain.get("tiempo", "?")
-            self.tree.insert("", tk.END, text=f"{url} ({tiempo}s)")
+            display_text = f"{url} ({tiempo}s)"
+
+            try:
+                response = requests.get(url, timeout=tiempo)
+                status = requests.status_codes
+
+                if status == 200:
+                    color = "green"
+                    display_text += " ✅"
+                else:
+                    color = "red"
+                    display_text += f" ❌ ({status})"
+                    self.log_error(url, status, response.reason)
+
+            except requests.RequestException as e:
+                color = "red"
+                display_text += f" ❌ ({str(e)})"
+                self.log_error(url, "Error", str(e))
+
+            node = self.tree.insert("", tk.END, text=display_text)
+            self.tree.item(node, tags=(color,))
+
+        self.tree.tag_configure("green", foreground="green")
+        self.tree.tag_configure("red", foreground="red")
