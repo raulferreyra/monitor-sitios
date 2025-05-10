@@ -1,6 +1,8 @@
 import json
-import tkinter as tk
 import requests
+import threading
+import time
+import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
 
