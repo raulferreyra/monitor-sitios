@@ -1,6 +1,8 @@
 import json
 import tkinter as tk
+import requests
 from tkinter import ttk
+from datetime import datetime
 
 
 class DomainMonitor:
@@ -9,15 +11,17 @@ class DomainMonitor:
     This class provides a GUI for displaying monitored domains and their times.
     """
 
-    def __init__(self, parent, config_path="config.json"):
+    def __init__(self, parent, config_path="config.json", error_path="error.json"):
         """
         Initializes the DomainMonitor class.
         Args:
             parent (tk.Tk): The parent Tkinter window.
             config_path (str): Path to the configuration file containing monitored domains.
+            error_path (str): Path to the error file for logging errors.
         """
         self.parent = parent
         self.config_path = config_path
+        self.error_path = error_path
         self.tree = None
         self.domains = self.load_domains()
         self.setup_tree()
