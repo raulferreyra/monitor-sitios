@@ -26,7 +26,9 @@ class DomainMonitor:
         self.error_path = error_path
         self.tree = None
         self.domains = self.load_domains()
+        self.tree_items = {}
         self.setup_tree()
+        self.start_monitoring_threads()
 
     def load_domains(self):
         """
