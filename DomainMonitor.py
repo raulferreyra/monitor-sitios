@@ -75,7 +75,18 @@ class DomainMonitor:
         self.tree = ttk.Treeview(self.parent)
         self.tree.heading("#0", text="Dominios monitoreados")
         self.tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-        self.reload()
+
+        for domain in self.domains:
+            url = domain.get("dominio", "Desconocido")
+            tiempo = int(domain.get("tiempo", 5))
+            display_text = f"{url} ({tiempo}s)"
+            node = self.tree.insert(
+                "", tk.END, text=display_text, tags=("gray",))
+            self.tree_items[url] = node
+
+        self.tree.tag_configure("green", foreground="green")
+        self.tree.tag_configure("red", foreground="red")
+        self.tree.tag_configure("gray", foreground="gray")
 
     def reload(self):
         """
