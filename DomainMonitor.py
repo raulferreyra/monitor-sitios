@@ -130,39 +130,3 @@ class DomainMonitor:
             self.tree.item(self.tree_items[url],
                            text=display_text, tags=(color,))
             time.sleep(tiempo)
-
-    def reload(self):
-        """
-        Reloads the domain list and updates the Treeview.
-        """
-        self.domains = self.load_domains()
-        for item in self.tree.get_children():
-            self.tree.delete(item)
-
-        for domain in self.domains:
-            url = domain.get("dominio", "Desconocido")
-            tiempo = int(domain.get("tiempo", 5))
-            display_text = f"{url} ({tiempo}s)"
-
-            try:
-                response = requests.get(url, timeout=tiempo)
-                status = response.status_code
-
-                if status == 200:
-                    color = "green"
-                    display_text += " ✅"
-                else:
-                    color = "red"
-                    display_text += f" ❌ ({status})"
-                    self.log_error(url, status, response.reason)
-
-            except requests.RequestException as e:
-                color = "red"
-                display_text += f" ❌ ({str(e)})"
-                self.log_error(url, "Error", str(e))
-
-            node = self.tree.insert("", tk.END, text=display_text)
-            self.tree.item(node, tags=(color,))
-
-        self.tree.tag_configure("green", foreground="green")
-        self.tree.tag_configure("red", foreground="red")
