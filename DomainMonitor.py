@@ -83,7 +83,7 @@ class DomainMonitor:
 
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
-            tiempo = domain.get("tiempo", "?")
+            tiempo = int(domain.get("tiempo", 5))
             display_text = f"{url} ({tiempo}s)"
 
             try:
