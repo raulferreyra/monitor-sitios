@@ -43,10 +43,10 @@ class DomainMonitor:
                 status = response.status_code
 
                 if status <= status < 300:
-                    update_callback(url, status, "green", "OK")
+                    update_callback(url, status, "green", "OK ✅")
                 else:
                     error_msg = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {url} Error {status}: {response.reason}"
-                    update_callback(url, status, "red", f"Error: {status}")
+                    update_callback(url, status, "red", f"Error: ❌ ({status})")
                     log_callback(error_msg)
 
             except requests.RequestException as e:
