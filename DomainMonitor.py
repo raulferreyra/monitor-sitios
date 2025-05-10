@@ -88,7 +88,7 @@ class DomainMonitor:
 
             try:
                 response = requests.get(url, timeout=tiempo)
-                status = requests.status_codes
+                status = response.status_code
 
                 if status == 200:
                     color = "green"
