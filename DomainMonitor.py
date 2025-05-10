@@ -102,6 +102,35 @@ class DomainMonitor:
                 daemon=True
             ).start()
 
+    def monitor_domain(self, url, tiempo):
+        """
+        Monitors a domain and updates its status in the Treeview.
+        Args:
+            url (str): The domain to monitor.
+            tiempo (int): The time interval for monitoring the domain.
+        """
+        while True:
+            try:
+                response = requests.get(url, timeout=tiempo)
+                status = response.status_code
+
+                if status == 200:
+                    color = "green"
+                    display_text = f"{url} ({tiempo}s) ✅"
+                else:
+                    color = "red"
+                    display_text = f"{url} ({tiempo}s) ❌ ({status})"
+                    self.log_error(url, status, response.reason)
+
+            except requests.RequestException as e:
+                color = "red"
+                display_text = f"{url} ({tiempo}s) ❌ ({str(e)})"
+                self.log_error(url, "Error", str(e))
+
+            self.tree.item(self.tree_items[url],
+                           text=display_text, tags=(color,))
+            time.sleep(tiempo)
+
     def reload(self):
         """
         Reloads the domain list and updates the Treeview.
