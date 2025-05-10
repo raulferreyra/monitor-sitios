@@ -149,6 +149,11 @@ class DomainMonitor:
 
             self.tree.item(self.tree_items[url],
                            text=display_text, tags=(color,))
+            fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            tiempo_ms = int(response.elapsed.total_seconds() * 1000)
+            status_text = f"{status} {response.reason}"
+
+            self.update_subitems(url, status_text, fecha, tiempo_ms)
             time.sleep(tiempo)
 
     def update_tree(self, url, text, color):
