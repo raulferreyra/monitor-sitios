@@ -29,6 +29,7 @@ class DomainMonitor:
         self.tree = None
         self.domains = self.load_domains()
         self.tree_items = {}
+        self.tree_subitems = {}
         self.setup_tree()
         self.start_monitoring_threads()
         self.threads = []
