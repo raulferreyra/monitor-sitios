@@ -200,3 +200,20 @@ class DomainMonitor:
             }
 
         self.start_monitoring_threads()
+
+    def update_subitems(self, url, status_text, fecha, response_time):
+        """
+        Updates the subitems of a domain in the Treeview.
+        Args:
+            url (str): The domain to update.
+            status_text (str): The HTTP status text to display.
+            fecha (str): The last check date to display.
+            response_time (str): The response time to display.
+        """
+        hijos = self.tree_subitems.get(url)
+        if hijos:
+            self.tree.item(hijos["estado"], text=f"Estado HTTP: {status_text}")
+            self.tree.item(
+                hijos["fecha"], text=f"Última verificación: {fecha}")
+            self.tree.item(
+                hijos["tiempo"], text=f"Tiempo de respuesta: {response_time} ms")
