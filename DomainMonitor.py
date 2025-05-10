@@ -39,6 +39,30 @@ class DomainMonitor:
             print(f"Error cargando dominios: {e}")
             return []
 
+    def log_error(self, domain, status_code, reason):
+        """
+        Logs errors to the error file.
+        Args:
+            domain (str): The domain that caused the error.
+            status_code (int): The HTTP status code received.
+            reason (str): The reason for the error.
+        """
+        error_entry = {
+            "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "dominio": domain,
+            "error": f"{status_code} - {reason}"
+        }
+
+        try:
+            with open(self.error_path, "a") as f:
+                errores = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            errores = []
+        errores.append(error_entry)
+
+        with open(self.error_path, "w") as f:
+            json.dump(errores, f, indent=4)
+
     def setup_tree(self):
         """
         Sets up the Treeview widget for displaying monitored domains.
