@@ -31,6 +31,8 @@ class DomainMonitor:
         self.tree_items = {}
         self.setup_tree()
         self.start_monitoring_threads()
+        self.threads = []
+        self.stop_threads = False
 
     def load_domains(self):
         """
@@ -95,14 +97,17 @@ class DomainMonitor:
         Starts monitoring threads for each domain.
         This method creates a thread for each domain to monitor its status.
         """
+        self.stop_threads = False
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
             tiempo = int(domain.get("tiempo", 60))
-            threading.Thread(
+            thread = threading.Thread(
                 target=self.monitor_domain,
                 args=(url, tiempo),
                 daemon=True
-            ).start()
+            )
+            self.threads.append(thread)
+            thread.start()
 
     def monitor_domain(self, url, tiempo):
         """
@@ -153,8 +158,10 @@ class DomainMonitor:
         This method is called when the user wants to refresh the monitored domains.
         Only call this method in the Main class, not in the DomainMonitor class.
         """
-        self.domains = self.load_domains()
+        self.stop_threads = True
+        self.threads = []
 
+        self.domains = self.load_domains()
         for item in self.tree.get_children():
             self.tree.delete(item)
         self.tree_items.clear()
