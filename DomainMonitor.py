@@ -78,7 +78,7 @@ class DomainMonitor:
 
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
-            tiempo = int(domain.get("tiempo", 5))
+            tiempo = int(domain.get("tiempo", 60))
             display_text = f"{url} ({tiempo}s)"
             node = self.tree.insert(
                 "", tk.END, text=display_text, tags=("gray",))
@@ -87,6 +87,20 @@ class DomainMonitor:
         self.tree.tag_configure("green", foreground="green")
         self.tree.tag_configure("red", foreground="red")
         self.tree.tag_configure("gray", foreground="gray")
+
+    def start_monitoring_threads(self):
+        """
+        Starts monitoring threads for each domain.
+        This method creates a thread for each domain to monitor its status.
+        """
+        for domain in self.domains:
+            url = domain.get("dominio", "Desconocido")
+            tiempo = int(domain.get("tiempo", 60))
+            threading.Thread(
+                target=self.monitor_domain,
+                args=(url, tiempo),
+                daemon=True
+            ).start()
 
     def reload(self):
         """
