@@ -3,8 +3,10 @@ import requests
 import threading
 import time
 import tkinter as tk
+from bs4 import BeautifulSoup
 from tkinter import ttk
 from datetime import datetime
+from urllib.parse import urljoin
 
 
 class DomainMonitor:
