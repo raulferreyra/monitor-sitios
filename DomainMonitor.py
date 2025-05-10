@@ -85,9 +85,21 @@ class DomainMonitor:
             url = domain.get("dominio", "Desconocido")
             tiempo = int(domain.get("tiempo", 60))
             display_text = f"{url} ({tiempo}s)"
-            node = self.tree.insert(
+            parent = self.tree.insert(
                 "", tk.END, text=display_text, tags=("gray",))
-            self.tree_items[url] = node
+            child_status = self.tree.insert(
+                parent, tk.END, text="Estado HTTP: ---")
+            child_fecha = self.tree.insert(
+                parent, tk.END, text="Última verificación: ---")
+            child_tiempo = self.tree.insert(
+                parent, tk.END, text="Tiempo de respuesta: ---")
+
+            self.tree_items[url] = parent
+            self.tree_subitems[url] = {
+                "estado": child_status,
+                "fecha": child_fecha,
+                "tiempo": child_tiempo
+            }
 
         self.tree.tag_configure("green", foreground="green")
         self.tree.tag_configure("red", foreground="red")
@@ -171,8 +183,20 @@ class DomainMonitor:
             url = domain.get("dominio", "Desconocido")
             tiempo = int(domain.get("tiempo", 5))
             display_text = f"{url} ({tiempo}s)"
-            node = self.tree.insert(
+            parent = self.tree.insert(
                 "", tk.END, text=display_text, tags=("gray",))
-            self.tree_items[url] = node
+            child_status = self.tree.insert(
+                parent, tk.END, text="Estado HTTP: ---")
+            child_fecha = self.tree.insert(
+                parent, tk.END, text="Última verificación: ---")
+            child_tiempo = self.tree.insert(
+                parent, tk.END, text="Tiempo de respuesta: ---")
+
+            self.tree_items[url] = parent
+            self.tree_subitems[url] = {
+                "estado": child_status,
+                "fecha": child_fecha,
+                "tiempo": child_tiempo
+            }
 
         self.start_monitoring_threads()
