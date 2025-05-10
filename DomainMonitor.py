@@ -130,3 +130,14 @@ class DomainMonitor:
             self.tree.item(self.tree_items[url],
                            text=display_text, tags=(color,))
             time.sleep(tiempo)
+
+    def update_tree(self, url, text, color):
+        """
+        Updates the Treeview widget.
+        This method refreshes the Treeview to reflect any changes in monitored domains.
+        """
+        item_id = self.tree_items.get(url)
+        if item_id:
+            self.tree.item(item_id, text=text, tags=(color,))
+        else:
+            print(f"Error: No se encontró el dominio {url} en el Treeview.")
