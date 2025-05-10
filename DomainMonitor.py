@@ -141,3 +141,28 @@ class DomainMonitor:
             self.tree.item(item_id, text=text, tags=(color,))
         else:
             print(f"Error: No se encontró el dominio {url} en el Treeview.")
+
+        def reload(self):
+            """
+            Reloads the monitored domains from the configuration file.
+            This method clears the current Treeview and repopulates it with the updated domains.
+
+            ADITIONAL NOTE:
+            This method is called when the user wants to refresh the monitored domains.
+            Only call this method in the Main class, not in the DomainMonitor class.
+            """
+            self.domains = self.load_domains()
+
+            for item in self.tree.get_children():
+                self.tree.delete(item)
+            self.tree_items.clear()
+
+            for domain in self.domains:
+                url = domain.get("dominio", "Desconocido")
+                tiempo = int(domain.get("tiempo", 5))
+                display_text = f"{url} ({tiempo}s)"
+                node = self.tree.insert(
+                    "", tk.END, text=display_text, tags=("gray",))
+                self.tree_items[url] = node
+
+            self.start_monitoring_threads()
