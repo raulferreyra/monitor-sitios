@@ -4,6 +4,51 @@ import webbrowser
 from tkinter import messagebox
 
 
+class UpdateChecker:
+    """
+    Class for checking for updates in a Tkinter application.
+    This class reads a remote version.json file to check for updates.
+    """
+
+    def __init__(self, current_version):
+        self.check_for_updates(current_version)
+
+    def check_for_updates(self, current_version):
+        """
+        Checks for updates by reading a remote version.json file.
+
+        Args:
+            current_version (str): Current app version.
+        """
+        try:
+            version_url = "https://monitor.urasweb.com/version.json"
+
+            response = requests.get(version_url, timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                latest = data.get("latest_version", "")
+                changelog = data.get("changelog", "")
+                download_url = data.get("download_url", "")
+
+                if latest != current_version:
+                    message = (
+                        f"Hay una nueva versión disponible: {latest}\n\n"
+                        f"Registro de cambios:\n{changelog}\n\n"
+                        f"¿Deseas ir a la página de descarga?"
+                    )
+                    if messagebox.askyesno("Actualización disponible", message):
+                        webbrowser.open(download_url)
+                else:
+                    print("[Monitor de Sitios] Ya tienes la última versión.")
+            else:
+                print(
+                    f"[Monitor de Sitios] No se pudo verificar actualizaciones. Código: {response.status_code}")
+
+        except Exception as e:
+            print(
+                f"[Monitor de Sitios] Error al verificar actualizaciones: {e}")
+
+
 class Tooltip:
     """
     Class for creating tooltips for widgets in a Tkinter application.
@@ -50,38 +95,3 @@ class Tooltip:
         if self.tooltip:
             self.tooltip.destroy()
             self.tooltip = None
-
-    def check_for_updates(self, current_version):
-        """
-        Checks for updates by reading a remote version.json file.
-
-        Args:
-            current_version (str): Current app version.
-        """
-        try:
-            version_url = "https://monitor.urasweb.com/version.json"
-
-            response = requests.get(version_url, timeout=5)
-            if response.status_code == 200:
-                data = response.json()
-                latest = data.get("latest_version", "")
-                changelog = data.get("changelog", "")
-                download_url = data.get("download_url", "")
-
-                if latest != current_version:
-                    message = (
-                        f"Hay una nueva versión disponible: {latest}\n\n"
-                        f"Registro de cambios:\n{changelog}\n\n"
-                        f"¿Deseas ir a la página de descarga?"
-                    )
-                    if messagebox.askyesno("Actualización disponible", message):
-                        webbrowser.open(download_url)
-                else:
-                    print("[Monitor de Sitios] Ya tienes la última versión.")
-            else:
-                print(
-                    f"[Monitor de Sitios] No se pudo verificar actualizaciones. Código: {response.status_code}")
-
-        except Exception as e:
-            print(
-                f"[Monitor de Sitios] Error al verificar actualizaciones: {e}")
