@@ -30,10 +30,10 @@ class DomainMonitor:
         self.domains = self.load_domains()
         self.tree_items = {}
         self.tree_subitems = {}
-        self.setup_tree()
-        self.start_monitoring_threads()
         self.threads = []
         self.stop_threads = False
+        self.setup_tree()
+        self.start_monitoring_threads()
 
     def load_domains(self):
         """
