@@ -6,7 +6,7 @@ import tkinter as tk
 from bs4 import BeautifulSoup
 from tkinter import ttk
 from datetime import datetime
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 
 class DomainMonitor:
@@ -77,32 +77,25 @@ class DomainMonitor:
         Sets up the Treeview widget for displaying monitored domains.
         This method creates the Treeview widget and populates it with the monitored domains.
         """
-        self.tree = ttk.Treeview(self.parent)
-        self.tree.heading("#0", text="Dominios monitoreados")
+        self.tree = ttk.Treeview(
+            self.parent,
+            columns=("estado", "fecha", "tiempo"),
+            show="tree headings",
+            height=20
+        )
+        self.tree.heading("#0", text="URL")
+        self.tree.heading("estado", text="Estado")
+        self.tree.heading("fecha", text="Última actualización")
+        self.tree.heading("tiempo", text="Tiempo de respuesta")
         self.tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
             tiempo = int(domain.get("tiempo", 60))
-            display_text = f"{url} ({tiempo}s)"
-            parent = self.tree.insert(
-                "", tk.END, text=display_text, tags=("gray",))
-            child_status = self.tree.insert(
-                parent, tk.END, text="Estado HTTP: ---")
-            child_fecha = self.tree.insert(
-                parent, tk.END, text="Última verificación: ---")
-            child_tiempo = self.tree.insert(
-                parent, tk.END, text="Tiempo de respuesta: ---")
+            item_id = self.tree.insert("", tk.END, text=url, values=(
+                "---", "---", "---"), tags=("gray",))
+            self.tree_items[url] = item_id
 
-            self.tree_items[url] = parent
-            self.tree_subitems[url] = {
-                "estado": child_status,
-                "fecha": child_fecha,
-                "tiempo": child_tiempo
-            }
-
-        self.tree.tag_configure("green", foreground="green")
-        self.tree.tag_configure("red", foreground="red")
         self.tree.tag_configure("gray", foreground="gray")
 
     def start_monitoring_threads(self):
