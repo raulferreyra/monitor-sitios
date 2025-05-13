@@ -1,2 +1,3 @@
-*.json
+error.json
+config.json
 __pycache__
