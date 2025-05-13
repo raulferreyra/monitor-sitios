@@ -2,7 +2,7 @@ import tkinter as tk
 from ConfigWindow import ConfigWindow
 from DomainMonitor import DomainMonitor
 from TrayManager import TrayManager
-from utils import Tooltip
+from utils import Tooltip, UpdateChecker
 
 # =========================
 # Monitor de Sitios v0.1.a
@@ -103,6 +103,7 @@ class App:
 
         self.tray = TrayManager(self)
         self.create_widgets()
+        UpdateChecker(__version__)
 
 
 if __name__ == "__main__":
