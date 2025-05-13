@@ -29,7 +29,6 @@ class DomainMonitor:
         self.tree = None
         self.domains = self.load_domains()
         self.tree_items = {}
-        self.tree_subitems = {}
         self.threads = []
         self.stop_threads = False
         self.setup_tree()
@@ -122,31 +121,87 @@ class DomainMonitor:
             url (str): The domain to monitor.
             tiempo (int): The time interval for monitoring the domain.
         """
-        while True:
+        while not self.stop_threads:
             try:
                 response = requests.get(url, timeout=tiempo)
                 status = response.status_code
+                fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                tiempo_ms = int(response.elapsed.total_seconds() * 1000)
+                estado = "Ok" if status == 200 else f"{status} {response.reason}"
+                color = "green" if status == 200 else "red"
 
-                if status == 200:
-                    color = "green"
-                    display_text = f"{url} ({tiempo}s) ✅"
-                else:
-                    color = "red"
-                    display_text = f"{url} ({tiempo}s) ❌ ({status})"
+                self.tree.item(self.tree_items[url], values=(
+                    estado, fecha, f"{tiempo_ms} ms"), tags=(color,))
+                if status != 200:
                     self.log_error(url, status, response.reason)
 
+                if status == 200:
+                    soup = BeautifulSoup(response.text, "html.parser")
+                    links = soup.find_all("a", href=True)
+                    base = url.rstrip('/')
+                    for link in links:
+                        href = link['href']
+                        if href.startswith("#") or href.startswith("mailto:"):
+                            continue
+
+                        full_url = urljoin(base + '/', href)
+                        parsed_url = urlparse(full_url)
+                        path = parsed_url.path
+
+                        if not path.startswith("/"):
+                            continue
+
+                        child_url = base + path
+                        if child_url == url:
+                            continue
+
+                        try:
+                            sub_response = requests.get(child_url, timeout=10)
+                            sub_status = sub_response.status_code
+                            sub_fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                            sub_tiempo = int(
+                                sub_response.elapsed.total_seconds() * 1000)
+                            sub_estado = "Ok" if sub_status == 200 else f"{sub_status} {sub_response.reason}"
+                            sub_color = "green" if sub_status == 200 else "red"
+
+                            exists = False
+                            for item in self.tree.get_children(self.tree_items[url]):
+                                if self.tree.item(item, "text") == path:
+                                    exists = True
+                                    self.tree.item(item, values=(
+                                        sub_estado, sub_fecha, f"{sub_tiempo} ms"), tags=(sub_color,))
+                                    break
+
+                            if not exists:
+                                self.tree.insert(
+                                    self.tree_items[url],
+                                    tk.END,
+                                    text=path,
+                                    values=(sub_estado, sub_fecha,
+                                            f"{sub_tiempo} ms"),
+                                    tags=(sub_color,)
+                                )
+                            if sub_status != 200:
+                                self.log_error(
+                                    child_url, sub_status, sub_response.reason)
+
+                        except requests.RequestException as e:
+                            error_fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                            self.tree.insert(
+                                self.tree_items[url],
+                                tk.END,
+                                text=path,
+                                values=("Error", error_fecha, "N/A"),
+                                tags=("red",)
+                            )
+                            self.log_error(child_url, "Error", str(e))
+
             except requests.RequestException as e:
-                color = "red"
-                display_text = f"{url} ({tiempo}s) ❌ ({str(e)})"
+                fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                self.tree.item(self.tree_items[url], values=(
+                    str(e), fecha, "N/A"), tags=("red",))
                 self.log_error(url, "Error", str(e))
 
-            self.tree.item(self.tree_items[url],
-                           text=display_text, tags=(color,))
-            fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            tiempo_ms = int(response.elapsed.total_seconds() * 1000)
-            status_text = f"{status} {response.reason}"
-
-            self.update_subitems(url, status_text, fecha, tiempo_ms)
             time.sleep(tiempo)
 
     def update_tree(self, url, text, color):
@@ -177,41 +232,4 @@ class DomainMonitor:
             self.tree.delete(item)
         self.tree_items.clear()
 
-        for domain in self.domains:
-            url = domain.get("dominio", "Desconocido")
-            tiempo = int(domain.get("tiempo", 5))
-            display_text = f"{url} ({tiempo}s)"
-            parent = self.tree.insert(
-                "", tk.END, text=display_text, tags=("gray",))
-            child_status = self.tree.insert(
-                parent, tk.END, text="Estado HTTP: ---")
-            child_fecha = self.tree.insert(
-                parent, tk.END, text="Última verificación: ---")
-            child_tiempo = self.tree.insert(
-                parent, tk.END, text="Tiempo de respuesta: ---")
-
-            self.tree_items[url] = parent
-            self.tree_subitems[url] = {
-                "estado": child_status,
-                "fecha": child_fecha,
-                "tiempo": child_tiempo
-            }
-
         self.start_monitoring_threads()
-
-    def update_subitems(self, url, status_text, fecha, response_time):
-        """
-        Updates the subitems of a domain in the Treeview.
-        Args:
-            url (str): The domain to update.
-            status_text (str): The HTTP status text to display.
-            fecha (str): The last check date to display.
-            response_time (str): The response time to display.
-        """
-        hijos = self.tree_subitems.get(url)
-        if hijos:
-            self.tree.item(hijos["estado"], text=f"Estado HTTP: {status_text}")
-            self.tree.item(
-                hijos["fecha"], text=f"Última verificación: {fecha}")
-            self.tree.item(
-                hijos["tiempo"], text=f"Tiempo de respuesta: {response_time} ms")
