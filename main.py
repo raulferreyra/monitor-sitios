@@ -4,6 +4,16 @@ from ConfigWindow import ConfigWindow
 from DomainMonitor import DomainMonitor
 from utils import Tooltip
 
+# =========================
+# Monitor de Sitios v0.1.a
+# =========================
+__version__ = "0.1.a"
+__project_name__ = "Monitor de Sitios"
+__author__ = "URAS - Elemento"
+__license__ = "MIT"
+# =========================
+# =========================
+
 
 class App:
     """
