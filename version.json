@@ -1,0 +1,9 @@
+{
+    "latest_version": "0.1.a",
+    "download_url": "https://monitor.urasweb.com/downloads/monitor-sitios.exe",
+    "changelog": "First version with domain monitoring and scrapping http.",
+    "description": "Monitor your favorite websites and get notified when they change.",
+    "author": "URAS - Elemento",
+    "author_url": "https://urasweb.com",
+    "license": "MIT"
+}
