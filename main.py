@@ -8,7 +8,7 @@ from utils import Tooltip
 # Monitor de Sitios v0.1.a
 # =========================
 __version__ = "0.1.a"
-__project_name__ = "Monitor de Sitios"
+__project_name__ = "US - Monitor de Sitios"
 __author__ = "URAS - Elemento"
 __license__ = "MIT"
 # =========================
@@ -97,7 +97,7 @@ class App:
             root (tk.Tk): The main Tkinter window.
         """
         self.root = root
-        self.root.title("US - Monitor de Sitios")
+        self.root.title(f"{__project_name__} - v{__version__}")
         self.root.geometry("800x600")
         self.root.protocol("WM_DELETE_WINDOW", self.hide_window)
 
