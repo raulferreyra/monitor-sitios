@@ -113,10 +113,46 @@ class DomainMonitor:
             url = domain.get("dominio", "Desconocido")
             tiempo = int(domain.get("tiempo", 60))
             item_id = self.tree.insert("", tk.END, text=url, values=(
-                "---", "---", "---"), tags=("gray",))
+                "---", "---", "---"), tags=("black",))
             self.tree_items[url] = item_id
 
-        self.tree.tag_configure("gray", foreground="gray")
+        self.tree.tag_configure("green", foreground="green")
+        self.tree.tag_configure("red", foreground="red")
+        self.tree.tag_configure("yellow", foreground="orange")
+        self.tree.tag_configure("black", foreground="black")
+
+    def update_parent_color(self, parent_id):
+        """
+        Updates the color of the parent node based on its children.
+        Green: all children green
+        Red: all children red or error
+        Yellow: mixed colors
+        Black: no children or all loading
+
+        Args:
+            parent_id (str): The ID of the parent node in the Treeview.
+        """
+        children = self.tree.get_children(parent_id)
+        colors = set()
+        for child in children:
+            tags = self.tree.item(child, "tags")
+            if tags:
+                colors.update(tags)
+
+        new_tag = "black"
+        if colors:
+            if all(tag == "green" for tag in colors):
+                new_tag = "green"
+            elif all(tag == "red" for tag in colors):
+                new_tag = "red"
+            elif "green" in colors and "red" in colors:
+                new_tag = "yellow"
+            elif all(tag == "black" for tag in colors):
+                new_tag = "black"
+            else:
+                new_tag = "yellow"
+
+        self.tree.item(parent_id, tags=(new_tag,))
 
     def start_monitoring_threads(self):
         """
@@ -153,8 +189,10 @@ class DomainMonitor:
 
                 self.tree.item(self.tree_items[url], values=(
                     estado, fecha, f"{tiempo_ms} ms"), tags=(color,))
+                self.update_parent_color(self.tree_items[url])
                 if status != 200:
                     self.log_error(url, status, response.reason)
+                    self.update_parent_color(self.tree_items[url])
 
                 if status == 200:
                     soup = BeautifulSoup(response.text, "html.parser")
@@ -191,6 +229,8 @@ class DomainMonitor:
                                     exists = True
                                     self.tree.item(item, values=(
                                         sub_estado, sub_fecha, f"{sub_tiempo} ms"), tags=(sub_color,))
+                                    self.update_parent_color(
+                                        self.tree_items[url])
                                     break
 
                             if not exists:
@@ -202,9 +242,11 @@ class DomainMonitor:
                                             f"{sub_tiempo} ms"),
                                     tags=(sub_color,)
                                 )
+                                self.update_parent_color(self.tree_items[url])
                             if sub_status != 200:
                                 self.log_error(
                                     child_url, sub_status, sub_response.reason)
+                                self.update_parent_color(self.tree_items[url])
 
                         except requests.RequestException as e:
                             error_fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -216,12 +258,14 @@ class DomainMonitor:
                                 tags=("red",)
                             )
                             self.log_error(child_url, "Error", str(e))
+                            self.update_parent_color(self.tree_items[url])
 
             except requests.RequestException as e:
                 fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 self.tree.item(self.tree_items[url], values=(
                     str(e), fecha, "N/A"), tags=("red",))
                 self.log_error(url, "Error", str(e))
+                self.update_parent_color(self.tree_items[url])
 
             time.sleep(tiempo)
 
@@ -233,6 +277,7 @@ class DomainMonitor:
         item_id = self.tree_items.get(url)
         if item_id:
             self.tree.item(item_id, text=text, tags=(color,))
+            self.update_parent_color(self.tree_items[url])
         else:
             print(f"Error: No se encontró el dominio {url} en el Treeview.")
 
