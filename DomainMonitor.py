@@ -197,20 +197,23 @@ class DomainMonitor:
                 if status == 200:
                     soup = BeautifulSoup(response.text, "html.parser")
                     links = soup.find_all("a", href=True)
-                    base = url.rstrip('/')
+                    base_url = url.rstrip('/')
+                    base_domain = urlparse(base_url).netloc
                     for link in links:
                         href = link['href']
-                        if href.startswith("#") or href.startswith("mailto:"):
+                        if href.startswith("#") or href.startswith("mailto:") or href.startswith("tel:"):
                             continue
 
-                        full_url = urljoin(base + '/', href)
+                        full_url = urljoin(base_url + '/', href)
                         parsed_url = urlparse(full_url)
-                        path = parsed_url.path
+                        if parsed_url.netloc and parsed_url.netloc != base_domain:
+                            continue
 
+                        path = parsed_url.path
                         if not path.startswith("/"):
                             continue
 
-                        child_url = base + path
+                        child_url = base_url + path
                         if child_url == url:
                             continue
 
