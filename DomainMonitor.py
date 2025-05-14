@@ -81,6 +81,7 @@ class DomainMonitor:
 
         # Scrollbars
         vsb = ttk.Scrollbar(container, orient="vertical")
+        vsb.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.tree = ttk.Treeview(
             container,
@@ -90,9 +91,18 @@ class DomainMonitor:
             yscrollcommand=vsb.set,
         )
 
-        vsb.config(command=self.tree.yview)
-        vsb.pack(side=tk.RIGHT, fill=tk.Y)
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        vsb.config(command=self.tree.yview)
+
+        total_width = 550
+        self.tree.column("#0", width=int(
+            total_width * 0.40), anchor="w")  # URL
+        self.tree.column("estado", width=int(
+            total_width * 0.10), anchor="center")
+        self.tree.column("fecha", width=int(
+            total_width * 0.40), anchor="center")
+        self.tree.column("tiempo", width=int(
+            total_width * 0.10), anchor="center")
 
         self.tree.heading("#0", text="URL")
         self.tree.heading("estado", text="Estado")
