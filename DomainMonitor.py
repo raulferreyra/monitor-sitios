@@ -76,17 +76,28 @@ class DomainMonitor:
         Sets up the Treeview widget for displaying monitored domains.
         This method creates the Treeview widget and populates it with the monitored domains.
         """
+        container = ttk.Frame(self.parent)
+        container.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        # Scrollbars
+        vsb = ttk.Scrollbar(container, orient="vertical")
+
         self.tree = ttk.Treeview(
-            self.parent,
+            container,
             columns=("estado", "fecha", "tiempo"),
             show="tree headings",
-            height=20
+            height=20,
+            yscrollcommand=vsb.set,
         )
+
+        vsb.config(command=self.tree.yview)
+        vsb.pack(side=tk.RIGHT, fill=tk.Y)
+        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
         self.tree.heading("#0", text="URL")
         self.tree.heading("estado", text="Estado")
         self.tree.heading("fecha", text="Última actualización")
         self.tree.heading("tiempo", text="Tiempo de respuesta")
-        self.tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
