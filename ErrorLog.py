@@ -4,6 +4,7 @@ import os
 import csv
 import xlwt
 from utils import Tooltip
+from tkinter import filedialog, messagebox
 
 
 class ErrorLogWindow(tk.Toplevel):
@@ -103,43 +104,76 @@ class ErrorLogWindow(tk.Toplevel):
         """
         Exports the error log to a CSV file.
         The CSV file is named "error_log.csv" and is saved in the current directory.
+        The user is prompted to choose the save location and file name.
+        If the error log file does not exist or is empty, a warning message is displayed.
         """
         try:
+            if not os.path.exists("error.json"):
+                messagebox.showwarning(
+                    "Advertencia", "No hay registros para exportar.")
+                return
+
+            filepath = filedialog.asksaveasfilename(
+                defaultextension=".csv",
+                filetypes=[("Archivos CSV", "*.csv")],
+                title="Guardar como..."
+            )
+            if not filepath:
+                return  # El usuario canceló
+
             with open("error.json", "r", encoding="utf-8") as f:
                 errors = json.load(f)
 
-            with open("error_log.csv", "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
+            with open(filepath, "w", newline="", encoding="utf-8") as csvfile:
+                writer = csv.writer(csvfile)
                 writer.writerow(["Fecha", "Dominio", "Error"])
                 for entry in errors:
                     writer.writerow(
                         [entry["fecha"], entry["dominio"], entry["error"]])
-            print("Exportado como CSV.")
+
+            messagebox.showinfo(
+                "Éxito", f"Archivo CSV exportado correctamente:\n{filepath}")
         except Exception as e:
-            print(f"Error al exportar CSV: {e}")
+            messagebox.showerror("Error", f"No se pudo exportar a CSV:\n{e}")
 
     def export_to_xls(self):
         """
         Exports the error log to a XLS file.
         The XLS file is named "error_log.xls" and is saved in the current directory.
+        The user is prompted to choose the save location and file name.
+        If the error log file does not exist or is empty, a warning message is displayed.
         """
         try:
+            if not os.path.exists("error.json"):
+                messagebox.showwarning(
+                    "Advertencia", "No hay registros para exportar.")
+                return
+
+            filepath = filedialog.asksaveasfilename(
+                defaultextension=".xls",
+                filetypes=[("Archivos Excel 97-2003", "*.xls")],
+                title="Guardar como..."
+            )
+            if not filepath:
+                return  # El usuario canceló
+
             with open("error.json", "r", encoding="utf-8") as f:
                 errors = json.load(f)
 
             wb = xlwt.Workbook()
             ws = wb.add_sheet("Errores")
 
-            headers = ["Fecha", "Dominio", "Error"]
-            for col, header in enumerate(headers):
-                ws.write(0, col, header)
+            ws.write(0, 0, "Fecha")
+            ws.write(0, 1, "Dominio")
+            ws.write(0, 2, "Error")
 
-            for row, entry in enumerate(errors, start=1):
-                ws.write(row, 0, entry["fecha"])
-                ws.write(row, 1, entry["dominio"])
-                ws.write(row, 2, entry["error"])
+            for i, entry in enumerate(errors, start=1):
+                ws.write(i, 0, entry["fecha"])
+                ws.write(i, 1, entry["dominio"])
+                ws.write(i, 2, entry["error"])
 
-            wb.save("error_log.xls")
-            print("Exportado como XLS.")
+            wb.save(filepath)
+            messagebox.showinfo(
+                "Éxito", f"Archivo XLS exportado correctamente:\n{filepath}")
         except Exception as e:
-            print(f"Error al exportar XLS: {e}")
+            messagebox.showerror("Error", f"No se pudo exportar a XLS:\n{e}")
