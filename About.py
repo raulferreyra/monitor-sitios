@@ -1,31 +1,38 @@
 import tkinter as tk
-from tkinter import ttk
 import os
+from tkinter import ttk
 
 
 class AboutWindow(tk.Toplevel):
+    """
+    A class to create an About window for the application.
+    This window displays the application title, version, description,
+    and a changelog. The changelog is loaded from a text file.
+    """
+
     def __init__(self, master=None):
+        """
+        Initializes the About window.
+        Args:
+            master (tk.Tk): The parent window.
+        """
         super().__init__(master)
         self.title("About")
         self.geometry("500x400")
         self.resizable(False, False)
 
-        # Title
         title_label = tk.Label(
             self, text="Monitor de Sitios - v1.1.0", font=("Arial", 14, "bold"))
         title_label.pack(pady=10)
 
-        # Description
         desc = "Monitor your favorite websites and get notified when they change.\nDeveloped by URAS - Elemento\nVisit: https://urasweb.com"
         desc_label = tk.Label(self, text=desc, justify="center")
         desc_label.pack(pady=5)
 
-        # Changelog
         changelog_label = tk.Label(
             self, text="Changelog:", font=("Arial", 12, "bold"))
         changelog_label.pack(pady=(15, 5))
 
-        # Scrollable changelog viewer
         changelog_frame = tk.Frame(self)
         changelog_frame.pack(fill="both", expand=True, padx=10, pady=5)
 
@@ -40,6 +47,11 @@ class AboutWindow(tk.Toplevel):
         self.load_changelog()
 
     def load_changelog(self):
+        """
+        Loads the changelog from a text file and displays it in the text widget.
+        If the file does not exist, a message is displayed.
+        The text widget is set to read-only mode after loading the content.
+        """
         if os.path.exists("changelog.txt"):
             with open("changelog.txt", "r", encoding="utf-8") as f:
                 content = f.read()
