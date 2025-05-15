@@ -1,3 +1,5 @@
 error.json
 config.json
+build
+dist
 __pycache__
