@@ -5,9 +5,9 @@ from TrayManager import TrayManager
 from utils import Tooltip, UpdateChecker
 
 # =========================
-# Monitor de Sitios v0.1.a
+# Monitor de Sitios v1.0.0
 # =========================
-__version__ = "0.1.a"
+__version__ = "1.0.0"
 __project_name__ = "US - Monitor de Sitios"
 __author__ = "URAS - Elemento"
 __license__ = "MIT"

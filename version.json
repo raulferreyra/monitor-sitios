@@ -1,5 +1,5 @@
 {
-    "latest_version": "0.1.a",
+    "latest_version": "1.0.0",
     "download_url": "https://monitor.urasweb.com/downloads/monitor-sitios.exe",
     "changelog": "First version with domain monitoring and scrapping http.",
     "description": "Monitor your favorite websites and get notified when they change.",
