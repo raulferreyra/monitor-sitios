@@ -1,6 +1,7 @@
 import tkinter as tk
 import os
 import sys
+from About import AboutWindow
 from ConfigWindow import ConfigWindow
 from DomainMonitor import DomainMonitor
 from TrayManager import TrayManager
@@ -55,6 +56,13 @@ class App:
         """
         ConfigWindow(self.root, self.domain_monitor)
 
+    def open_about(self):
+        """
+        Opens the about window when the user clicks the about button.
+        This method is called when the user clicks the about button in the main window.
+        """
+        AboutWindow(self.root)
+
     def hide_window(self):
         """
         Hides the main window when the user closes it.
@@ -89,6 +97,11 @@ class App:
                                   relief="flat", bd=0, command=self.open_config)
         config_button.grid(row=0, column=2, padx=5)
         Tooltip(config_button, "Abrir configuración")
+
+        config_button = tk.Button(header, text="❓", font=("Arial", 14),
+                                  relief="flat", bd=0, command=self.open_about)
+        config_button.grid(row=0, column=3, padx=5)
+        Tooltip(config_button, "Acerca de")
 
         self.domain_monitor = DomainMonitor(self.root)
 
