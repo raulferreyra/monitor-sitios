@@ -101,20 +101,20 @@ class App:
         refresh_button.grid(row=0, column=1, padx=5)
         Tooltip(refresh_button, "Actualizar vista")
 
-        refresh_button = tk.Button(header, text="⛔", font=("Arial", 14),
-                                   relief="flat", bd=0, command=self.open_errors)
-        refresh_button.grid(row=0, column=2, padx=5)
-        Tooltip(refresh_button, "ver errores")
+        error_button = tk.Button(header, text="⛔", font=("Arial", 14),
+                                 relief="flat", bd=0, command=self.open_errors)
+        error_button.grid(row=0, column=2, padx=5)
+        Tooltip(error_button, "ver errores")
 
         config_button = tk.Button(header, text="⚙️", font=("Arial", 14),
                                   relief="flat", bd=0, command=self.open_config)
         config_button.grid(row=0, column=3, padx=5)
         Tooltip(config_button, "Abrir configuración")
 
-        config_button = tk.Button(header, text="❓", font=("Arial", 14),
-                                  relief="flat", bd=0, command=self.open_about)
-        config_button.grid(row=0, column=4, padx=5)
-        Tooltip(config_button, "Acerca de")
+        about_button = tk.Button(header, text="❓", font=("Arial", 14),
+                                 relief="flat", bd=0, command=self.open_about)
+        about_button.grid(row=0, column=4, padx=5)
+        Tooltip(about_button, "Acerca de")
 
         self.domain_monitor = DomainMonitor(self.root)
 
