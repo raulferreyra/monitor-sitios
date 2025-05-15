@@ -1,4 +1,6 @@
 import tkinter as tk
+import os
+import sys
 from ConfigWindow import ConfigWindow
 from DomainMonitor import DomainMonitor
 from TrayManager import TrayManager
@@ -108,12 +110,26 @@ class App:
         UpdateChecker(__version__)
 
 
+def resource_path(relative_path):
+    """
+    Get the absolute path to the resource, works for dev and PyInstaller.
+    Args:
+        relative_path (str): The relative path to the resource.
+    """
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 if __name__ == "__main__":
     """
     Main function to run the application.
     This function creates the main Tkinter window and starts the application.
     """
     root = tk.Tk()
-    root.iconbitmap("favicon.ico")
+    root.iconbitmap(resource_path("favicon.ico"))
     app = App(root)
     root.mainloop()
