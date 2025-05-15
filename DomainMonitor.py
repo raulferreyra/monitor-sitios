@@ -201,7 +201,7 @@ class DomainMonitor:
                     base_domain = urlparse(base_url).netloc
                     for link in links:
                         href = link['href']
-                        if href.startswith("#") or href.startswith("mailto:") or href.startswith("tel:"):
+                        if any(s in href for s in ['#', '?']) or href.startswith(('mailto:', 'tel:')):
                             continue
 
                         full_url = urljoin(base_url + '/', href)
@@ -237,7 +237,7 @@ class DomainMonitor:
                                     break
 
                             if not exists:
-                                self.tree.insert(
+                                new_id = self.tree.insert(
                                     self.tree_items[url],
                                     tk.END,
                                     text=path,
@@ -245,10 +245,16 @@ class DomainMonitor:
                                             f"{sub_tiempo} ms"),
                                     tags=(sub_color,)
                                 )
-                                self.update_parent_color(self.tree_items[url])
-                            if sub_status != 200:
-                                self.log_error(
-                                    child_url, sub_status, sub_response.reason)
+
+                                children = list(
+                                    self.tree.get_children(self.tree_items[url]))
+                                sorted_children = sorted(
+                                    children, key=lambda c: self.tree.item(c, "text"))
+
+                                for idx, child in enumerate(sorted_children):
+                                    self.tree.move(
+                                        child, self.tree_items[url], idx)
+
                                 self.update_parent_color(self.tree_items[url])
 
                         except requests.RequestException as e:
