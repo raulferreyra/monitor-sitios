@@ -8,6 +8,7 @@ class ErrorLogWindow(tk.Toplevel):
     A class to create a window that displays the error log of the application.
     This window shows the date, domain, and error message for each entry in the log.
     The log is loaded from a JSON file named "error.json".
+    The window contains a text widget with horizontal and vertical scrollbars
     """
 
     def __init__(self, master=None):
@@ -16,9 +17,10 @@ class ErrorLogWindow(tk.Toplevel):
         Args:
             master (tk.Tk): The parent window.
         """
+
         super().__init__(master)
         self.title("Registro de Errores")
-        self.geometry("600x400")
+        self.geometry("800x400")
         self.resizable(True, True)
 
         title_label = tk.Label(
@@ -28,12 +30,22 @@ class ErrorLogWindow(tk.Toplevel):
         frame = tk.Frame(self)
         frame.pack(fill="both", expand=True, padx=10, pady=5)
 
-        scrollbar = tk.Scrollbar(frame)
-        scrollbar.pack(side="right", fill="y")
+        y_scrollbar = tk.Scrollbar(frame, orient="vertical")
+        y_scrollbar.pack(side="right", fill="y")
 
-        self.text = tk.Text(frame, wrap="none", yscrollcommand=scrollbar.set)
+        x_scrollbar = tk.Scrollbar(frame, orient="horizontal")
+        x_scrollbar.pack(side="bottom", fill="x")
+
+        self.text = tk.Text(
+            frame,
+            wrap="none",
+            yscrollcommand=y_scrollbar.set,
+            xscrollcommand=x_scrollbar.set
+        )
         self.text.pack(side="left", fill="both", expand=True)
-        scrollbar.config(command=self.text.yview)
+
+        y_scrollbar.config(command=self.text.yview)
+        x_scrollbar.config(command=self.text.xview)
 
         self.load_errors()
 
@@ -55,12 +67,12 @@ class ErrorLogWindow(tk.Toplevel):
                 self.text.insert("1.0", "No hay errores registrados.")
                 return
 
-            header = f"{'Fecha y Hora':<22} | {'Dominio':<50} | Error\n"
+            header = f"{'Fecha y Hora':<22} | {'Dominio':<60} | Error\n"
             self.text.insert("1.0", header)
-            self.text.insert("2.0", "-" * 100 + "\n")
+            self.text.insert("2.0", "-" * 120 + "\n")
 
             for entry in errors:
-                line = f"{entry['fecha']:<22} | {entry['dominio'][:48]:<50} | {entry['error']}\n"
+                line = f"{entry['fecha']:<22} | {entry['dominio']:<60} | {entry['error']}\n"
                 self.text.insert("end", line)
         except Exception as e:
             self.text.insert("1.0", f"Error leyendo archivo de errores: {e}")
