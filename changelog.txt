@@ -1,0 +1,11 @@
+Version 1.1.0 - August 16, 2025
+
+- Fixed issue with view reload:
+  Prevents the tree from duplicating when refreshing the interface.
+
+- Fixed issue when saving sites:
+  Configured sites are now immediately visible without needing to reload or reopen the app.
+
+Version 1.0.0 - August 15, 2025
+
+- First version with domain monitoring and scrapping http.
