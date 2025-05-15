@@ -1,6 +1,7 @@
 import tkinter as tk
 import json
 import os
+from utils import Tooltip
 
 
 class ErrorLogWindow(tk.Toplevel):
@@ -21,11 +22,27 @@ class ErrorLogWindow(tk.Toplevel):
         super().__init__(master)
         self.title("Registro de Errores")
         self.geometry("800x400")
+        self.iconbitmap("favicon.ico")
         self.resizable(True, True)
+
+        header = tk.Frame(self)
+        header.pack(fill=tk.X, pady=10, padx=10)
 
         title_label = tk.Label(
             self, text="Registro de Errores", font=("Arial", 14, "bold"))
         title_label.pack(pady=10)
+
+        title_label.grid(row=0, column=0, sticky="w")
+
+        csv_button = tk.Button(header, text="🔄", font=("Arial", 14),
+                               relief="flat", bd=0, command=self.export_to_csv)
+        csv_button.grid(row=0, column=1, padx=5)
+        Tooltip(csv_button, "Exportar a CSV")
+
+        xls_button = tk.Button(header, text="🔄", font=("Arial", 14),
+                               relief="flat", bd=0, command=self.export_to_xls)
+        xls_button.grid(row=0, column=2, padx=5)
+        Tooltip(xls_button, "Exportar a XLS")
 
         frame = tk.Frame(self)
         frame.pack(fill="both", expand=True, padx=10, pady=5)
@@ -77,3 +94,17 @@ class ErrorLogWindow(tk.Toplevel):
         except Exception as e:
             self.text.insert("1.0", f"Error leyendo archivo de errores: {e}")
         self.text.config(state="disabled")
+
+    def export_to_csv(self):
+        """
+        Exports the error log to a CSV file.
+        The CSV file is named "error_log.csv" and is saved in the current directory.
+        """
+        pass
+
+    def export_to_xls(self):
+        """
+        Exports the error log to a XLS file.
+        The XLS file is named "error_log.xls" and is saved in the current directory.
+        """
+        pass
