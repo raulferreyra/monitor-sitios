@@ -1,6 +1,8 @@
 import tkinter as tk
 import json
 import os
+import csv
+import xlwt
 from utils import Tooltip
 
 
@@ -28,18 +30,20 @@ class ErrorLogWindow(tk.Toplevel):
         header = tk.Frame(self)
         header.pack(fill=tk.X, pady=10, padx=10)
 
-        title_label = tk.Label(
-            self, text="Registro de Errores", font=("Arial", 14, "bold"))
-        title_label.pack(pady=10)
+        header.columnconfigure(0, weight=1)
+        header.columnconfigure(1, weight=0)
+        header.columnconfigure(2, weight=0)
 
+        title_label = tk.Label(
+            header, text="Registro de Errores", font=("Arial", 14, "bold"))
         title_label.grid(row=0, column=0, sticky="w")
 
-        csv_button = tk.Button(header, text="🔄", font=("Arial", 14),
+        csv_button = tk.Button(header, text="📄", font=("Arial", 14),
                                relief="flat", bd=0, command=self.export_to_csv)
         csv_button.grid(row=0, column=1, padx=5)
         Tooltip(csv_button, "Exportar a CSV")
 
-        xls_button = tk.Button(header, text="🔄", font=("Arial", 14),
+        xls_button = tk.Button(header, text="📊", font=("Arial", 14),
                                relief="flat", bd=0, command=self.export_to_xls)
         xls_button.grid(row=0, column=2, padx=5)
         Tooltip(xls_button, "Exportar a XLS")
@@ -100,11 +104,42 @@ class ErrorLogWindow(tk.Toplevel):
         Exports the error log to a CSV file.
         The CSV file is named "error_log.csv" and is saved in the current directory.
         """
-        pass
+        try:
+            with open("error.json", "r", encoding="utf-8") as f:
+                errors = json.load(f)
+
+            with open("error_log.csv", "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow(["Fecha", "Dominio", "Error"])
+                for entry in errors:
+                    writer.writerow(
+                        [entry["fecha"], entry["dominio"], entry["error"]])
+            print("Exportado como CSV.")
+        except Exception as e:
+            print(f"Error al exportar CSV: {e}")
 
     def export_to_xls(self):
         """
         Exports the error log to a XLS file.
         The XLS file is named "error_log.xls" and is saved in the current directory.
         """
-        pass
+        try:
+            with open("error.json", "r", encoding="utf-8") as f:
+                errors = json.load(f)
+
+            wb = xlwt.Workbook()
+            ws = wb.add_sheet("Errores")
+
+            headers = ["Fecha", "Dominio", "Error"]
+            for col, header in enumerate(headers):
+                ws.write(0, col, header)
+
+            for row, entry in enumerate(errors, start=1):
+                ws.write(row, 0, entry["fecha"])
+                ws.write(row, 1, entry["dominio"])
+                ws.write(row, 2, entry["error"])
+
+            wb.save("error_log.xls")
+            print("Exportado como XLS.")
+        except Exception as e:
+            print(f"Error al exportar XLS: {e}")
