@@ -4,6 +4,7 @@ import sys
 from About import AboutWindow
 from ConfigWindow import ConfigWindow
 from DomainMonitor import DomainMonitor
+from ErrorLog import ErrorLogWindow
 from TrayManager import TrayManager
 from utils import Tooltip, UpdateChecker
 
@@ -63,6 +64,13 @@ class App:
         """
         AboutWindow(self.root)
 
+    def open_errors(self):
+        """
+        Opens the error log window when the user clicks the error log button.
+        This method is called when the user clicks the error log button in the main window.
+        """
+        ErrorLogWindow(self.root)
+
     def hide_window(self):
         """
         Hides the main window when the user closes it.
@@ -93,14 +101,19 @@ class App:
         refresh_button.grid(row=0, column=1, padx=5)
         Tooltip(refresh_button, "Actualizar vista")
 
+        refresh_button = tk.Button(header, text="⛔", font=("Arial", 14),
+                                   relief="flat", bd=0, command=self.open_errors)
+        refresh_button.grid(row=0, column=2, padx=5)
+        Tooltip(refresh_button, "ver errores")
+
         config_button = tk.Button(header, text="⚙️", font=("Arial", 14),
                                   relief="flat", bd=0, command=self.open_config)
-        config_button.grid(row=0, column=2, padx=5)
+        config_button.grid(row=0, column=3, padx=5)
         Tooltip(config_button, "Abrir configuración")
 
         config_button = tk.Button(header, text="❓", font=("Arial", 14),
                                   relief="flat", bd=0, command=self.open_about)
-        config_button.grid(row=0, column=3, padx=5)
+        config_button.grid(row=0, column=4, padx=5)
         Tooltip(config_button, "Acerca de")
 
         self.domain_monitor = DomainMonitor(self.root)
