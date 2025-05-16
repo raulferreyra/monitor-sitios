@@ -178,9 +178,13 @@ class DomainMonitor:
             url (str): The domain to monitor.
             tiempo (int): The time interval for monitoring the domain.
         """
+        headers = {
+            "User-Agent": "US - Monitor de Sitios - v1.1.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        }
         while not self.stop_threads:
             try:
-                response = requests.get(url, timeout=tiempo)
+                response = requests.get(url, timeout=tiempo, headers=headers)
                 status = response.status_code
                 fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 tiempo_ms = int(response.elapsed.total_seconds() * 1000)
@@ -218,7 +222,8 @@ class DomainMonitor:
                             continue
 
                         try:
-                            sub_response = requests.get(child_url, timeout=10)
+                            sub_response = requests.get(
+                                child_url, timeout=10, headers=headers)
                             sub_status = sub_response.status_code
                             sub_fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                             sub_tiempo = int(
