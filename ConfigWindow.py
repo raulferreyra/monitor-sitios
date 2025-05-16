@@ -24,6 +24,7 @@ class ConfigWindow:
         self.master = tk.Toplevel(master)
         self.master.title("Configuración de Sitios")
         self.master.geometry("500x400")
+        self.master.iconbitmap("favicon.ico")
         self.data = []
         self.domain_monitor = domain_monitor
 

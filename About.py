@@ -19,6 +19,7 @@ class AboutWindow(tk.Toplevel):
         super().__init__(master)
         self.title("About")
         self.geometry("500x400")
+        self.iconbitmap("favicon.ico")
         self.resizable(False, False)
 
         title_label = tk.Label(
