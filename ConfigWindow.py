@@ -93,7 +93,7 @@ class ConfigWindow:
             row=0, column=2, padx=5)
         self.new_time_entry = tk.Entry(self.form_frame, width=10)
         self.new_time_entry.grid(row=0, column=3, padx=5)
-        self.new_time_entry.insert(0, "60")
+        self.new_time_entry.insert(0, "300")
 
         add_button = tk.Button(
             self.form_frame, text="Guardar", command=self.add_entry)
@@ -111,9 +111,9 @@ class ConfigWindow:
             tk.messagebox.showerror("Error", "Dominio inválido.")
             return
 
-        # if time is empty or not a digit, set default to 60 seconds.
+        # if time is empty or not a digit, set default to 300 seconds.
         if not tiempo.isdigit():
-            tiempo = "60"
+            tiempo = "300"
 
         if any(d["dominio"].lower().strip() == dominio.lower() for d in self.data):
             tk.messagebox.showwarning(

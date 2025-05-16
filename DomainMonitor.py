@@ -111,7 +111,7 @@ class DomainMonitor:
 
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
-            tiempo = int(domain.get("tiempo", 60))
+            tiempo = int(domain.get("tiempo", 300))
             item_id = self.tree.insert("", tk.END, text=url, values=(
                 "---", "---", "---"), tags=("black",))
             self.tree_items[url] = item_id
@@ -162,7 +162,7 @@ class DomainMonitor:
         self.stop_threads = False
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
-            tiempo = int(domain.get("tiempo", 60))
+            tiempo = int(domain.get("tiempo", 300))
             thread = threading.Thread(
                 target=self.monitor_domain,
                 args=(url, tiempo),
