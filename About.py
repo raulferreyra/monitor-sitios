@@ -26,7 +26,13 @@ class AboutWindow(tk.Toplevel):
             self, text="Monitor de Sitios - v1.1.0", font=("Arial", 14, "bold"))
         title_label.pack(pady=10)
 
-        desc = "Monitor your favorite websites and get notified when they change.\nDeveloped by URAS - Elemento\nVisit: https://urasweb.com\nDonate me: https://liberapay.com/elemento/"
+        desc = (
+            "Monitor your favorite websites and get notified when they change.\n"
+            "Developed by URAS - Elemento\n"
+            "Visit: https://urasweb.com\n"
+            "Support development: https://liberapay.com/elemento/\n"
+            "NOTE: Make sure to review your domain's terms of service and third-party connection policies."
+        )
         desc_label = tk.Label(self, text=desc, justify="center")
         desc_label.pack(pady=5)
 
