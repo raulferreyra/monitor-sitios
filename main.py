@@ -128,7 +128,7 @@ class App:
         self.root.title(f"{__project_name__} - v{__version__}")
         self.root.geometry("800x600")
         self.root.resizable(False, False)
-        self.root.attributes("-toolwindow", True)
+        self.root.attributes("-toolwindow", False)
         self.root.protocol("WM_DELETE_WINDOW", self.hide_window)
 
         self.tray = TrayManager(self)
