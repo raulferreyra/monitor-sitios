@@ -270,11 +270,15 @@ class DomainMonitor:
                             self.update_parent_color(self.tree_items[url])
 
             except requests.RequestException as e:
-                fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                self.tree.item(self.tree_items[url], values=(
-                    str(e), fecha, "N/A"), tags=("red",))
-                self.log_error(url, "Error", str(e))
-                self.update_parent_color(self.tree_items[url])
+                error_fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                self.tree.insert(
+                    self.tree_items[url],
+                    tk.END,
+                    text=path,
+                    values=("Error", error_fecha, "N/A"),
+                    tags=("red",)
+                )
+                self.log_error(child_url, "Error", str(e))
 
             time.sleep(tiempo)
 
