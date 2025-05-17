@@ -1,3 +1,4 @@
+import threading
 import tkinter as tk
 import os
 import sys
@@ -48,7 +49,8 @@ class App:
         Reloads the domain monitor when the user clicks the refresh button.
         This method is called when the user clicks the refresh button in the main window.
         """
-        DomainMonitor(self.root, self.domain_monitor.config_path).reload()
+        threading.Thread(target=self.domain_monitor.reload,
+                         daemon=True).start()
 
     def open_config(self):
         """
