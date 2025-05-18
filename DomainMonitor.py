@@ -307,9 +307,13 @@ class DomainMonitor:
         Only call this method in the Main class, not in the DomainMonitor class.
         """
         self.stop_event.set()
-        for thread in self.threads:
-            thread.join()
+        self.parent.after(50, self._finish_reload)
 
+    def _finish_reload(self):
+        """
+        Finishes the reload process by clearing the Treeview and reloading the domains.
+        This method is called after a short delay to ensure that the threads are stopped before reloading.
+        """
         self.threads.clear()
         self.tree_items.clear()
         for item in self.tree.get_children():
@@ -318,10 +322,10 @@ class DomainMonitor:
         self.domains = self.load_domains()
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
-            item_id = self.tree.insert("", tk.END, text=url,
-                                       values=("---", "---", "---"),
-                                       tags=("black",))
-            self.tree_items[url] = item_id
+            iid = self.tree.insert(
+                "", tk.END, text=url, values=("---", "---", "---"), tags=("black",)
+            )
+            self.tree_items[url] = iid
 
         self.stop_event.clear()
         self.start_monitoring_threads()
