@@ -312,10 +312,16 @@ class DomainMonitor:
 
         self.threads.clear()
         self.tree_items.clear()
-
         for item in self.tree.get_children():
             self.tree.delete(item)
 
         self.domains = self.load_domains()
+        for domain in self.domains:
+            url = domain.get("dominio", "Desconocido")
+            item_id = self.tree.insert("", tk.END, text=url,
+                                       values=("---", "---", "---"),
+                                       tags=("black",))
+            self.tree_items[url] = item_id
+
         self.stop_event.clear()
         self.start_monitoring_threads()
