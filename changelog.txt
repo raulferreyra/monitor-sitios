@@ -1,10 +1,16 @@
-Version 1.1.0 - August 16, 2025
+Version 1.1.0 - August 18, 2025
 
 - Fixed issue with view reload:
   Prevents the tree from duplicating when refreshing the interface.
 
 - Fixed issue when saving sites:
   Configured sites are now immediately visible without needing to reload or reopen the app.
+
+- Added About View:
+  About is a view with changelog.
+
+- Added Error View:
+  A class to create a window that displays the error log of the application.
 
 - Added
   - About
