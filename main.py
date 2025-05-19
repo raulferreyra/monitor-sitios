@@ -1,3 +1,4 @@
+import multiprocessing
 import threading
 import tkinter as tk
 from About import AboutWindow
@@ -31,8 +32,7 @@ class App:
         This method is called when the user clicks on the tray icon.
         It restores the main window and stops the tray icon.
         """
-        self.root.after(0, self.root.deiconify)
-        self.tray.stop_tray_icon()
+        self.root.deiconify()
 
     def quit_app(self, _=None):
         """
@@ -40,7 +40,7 @@ class App:
         This method is called when the user selects "Quit" from the tray icon menu.
         """
         self.tray.stop_tray_icon()
-        self.root.quit()
+        self.root.destroy()
 
     def reload_monitor(self):
         """
@@ -132,6 +132,7 @@ class App:
         self.root.protocol("WM_DELETE_WINDOW", self.hide_window)
 
         self.tray = TrayManager(self)
+        self.tray.show_tray_icon()
         self.create_widgets()
         UpdateChecker(__version__)
 
@@ -141,6 +142,8 @@ if __name__ == "__main__":
     Main function to run the application.
     This function creates the main Tkinter window and starts the application.
     """
+    multiprocessing.freeze_support()
+
     root = tk.Tk()
     root.iconbitmap(IconManager.resource_path("favicon.ico"))
     app = App(root)
