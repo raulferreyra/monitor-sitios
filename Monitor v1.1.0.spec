@@ -5,9 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[
-        ('favicon.ico', '.')
-    ],
+    datas=[('favicon.ico', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -24,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='monitor',
+    name='Monitor v1.1.0',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
