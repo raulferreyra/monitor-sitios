@@ -1,6 +1,7 @@
 import tkinter as tk
 import os
 from tkinter import ttk
+from utils import IconManager
 
 
 class AboutWindow(tk.Toplevel):
@@ -19,7 +20,7 @@ class AboutWindow(tk.Toplevel):
         super().__init__(master)
         self.title("About")
         self.geometry("500x400")
-        self.iconbitmap("favicon.ico")
+        self.iconbitmap(IconManager.resource_path("favicon.ico"))
         self.resizable(False, False)
 
         title_label = tk.Label(

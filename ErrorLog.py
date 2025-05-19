@@ -3,7 +3,7 @@ import json
 import os
 import csv
 import xlwt
-from utils import Tooltip
+from utils import IconManager, Tooltip
 from tkinter import filedialog, messagebox
 
 
@@ -25,8 +25,8 @@ class ErrorLogWindow(tk.Toplevel):
         super().__init__(master)
         self.title("Registro de Errores")
         self.geometry("800x400")
-        self.iconbitmap("favicon.ico")
-        self.resizable(True, True)
+        self.iconbitmap(IconManager.resource_path("favicon.ico"))
+        self.resizable(False, False)
 
         header = tk.Frame(self)
         header.pack(fill=tk.X, pady=10, padx=10)

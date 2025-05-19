@@ -3,7 +3,7 @@ import os
 import json
 
 from tkinter import messagebox
-from utils import Tooltip
+from utils import Tooltip, IconManager
 
 CONFIG_FILE = "config.json"
 
@@ -24,7 +24,8 @@ class ConfigWindow:
         self.master = tk.Toplevel(master)
         self.master.title("Configuración de Sitios")
         self.master.geometry("500x400")
-        self.master.iconbitmap("favicon.ico")
+        self.master.iconbitmap(IconManager.resource_path("favicon.ico"))
+        self.master.resizable(False, False)
         self.data = []
         self.domain_monitor = domain_monitor
 
