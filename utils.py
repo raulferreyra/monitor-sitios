@@ -1,4 +1,6 @@
+import os
 import requests
+import sys
 import tkinter as tk
 import webbrowser
 from tkinter import messagebox
@@ -47,6 +49,26 @@ class UpdateChecker:
         except Exception as e:
             print(
                 f"[Monitor de Sitios] Error al verificar actualizaciones: {e}")
+
+
+class IconManager:
+    """
+    Class for managing the application icon in the system tray.
+    This class handles the creation and management of the system tray icon.
+    """
+
+    def resource_path(relative_path):
+        """
+        Get the absolute path to the resource, works for dev and PyInstaller.
+        Args:
+            relative_path (str): The relative path to the resource.
+        """
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
 
 
 class Tooltip:
