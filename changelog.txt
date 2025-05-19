@@ -12,10 +12,6 @@ Version 1.1.0 - August 18, 2025
 - Added Error View:
   A class to create a window that displays the error log of the application.
 
-- Added
-  - About
-  - Errors View
-
 Version 1.0.0 - August 15, 2025
 
 - First version with domain monitoring and scrapping http.
