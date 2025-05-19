@@ -1,7 +1,6 @@
 import json
 import requests
 import threading
-import time
 import tkinter as tk
 from bs4 import BeautifulSoup
 from tkinter import ttk
@@ -30,7 +29,8 @@ class DomainMonitor:
         self.domains = self.load_domains()
         self.tree_items = {}
         self.threads = []
-        self.stop_threads = False
+        self.stop_event = threading.Event()
+        self.stop_event.clear()
         self.setup_tree()
         self.start_monitoring_threads()
 
@@ -111,7 +111,7 @@ class DomainMonitor:
 
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
-            tiempo = int(domain.get("tiempo", 60))
+            tiempo = int(domain.get("tiempo", 300))
             item_id = self.tree.insert("", tk.END, text=url, values=(
                 "---", "---", "---"), tags=("black",))
             self.tree_items[url] = item_id
@@ -159,10 +159,10 @@ class DomainMonitor:
         Starts monitoring threads for each domain.
         This method creates a thread for each domain to monitor its status.
         """
-        self.stop_threads = False
+        self.stop_event.clear()
         for domain in self.domains:
             url = domain.get("dominio", "Desconocido")
-            tiempo = int(domain.get("tiempo", 60))
+            tiempo = int(domain.get("tiempo", 300))
             thread = threading.Thread(
                 target=self.monitor_domain,
                 args=(url, tiempo),
@@ -178,9 +178,13 @@ class DomainMonitor:
             url (str): The domain to monitor.
             tiempo (int): The time interval for monitoring the domain.
         """
-        while not self.stop_threads:
+        headers = {
+            "User-Agent": "US - Monitor de Sitios - v1.1.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        }
+        while not self.stop_event.is_set():
             try:
-                response = requests.get(url, timeout=tiempo)
+                response = requests.get(url, timeout=tiempo, headers=headers)
                 status = response.status_code
                 fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 tiempo_ms = int(response.elapsed.total_seconds() * 1000)
@@ -218,7 +222,8 @@ class DomainMonitor:
                             continue
 
                         try:
-                            sub_response = requests.get(child_url, timeout=10)
+                            sub_response = requests.get(
+                                child_url, timeout=10, headers=headers)
                             sub_status = sub_response.status_code
                             sub_fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                             sub_tiempo = int(
@@ -276,7 +281,9 @@ class DomainMonitor:
                 self.log_error(url, "Error", str(e))
                 self.update_parent_color(self.tree_items[url])
 
-            time.sleep(tiempo)
+            for _ in range(tiempo):
+                if self.stop_event.wait(1):
+                    break
 
     def update_tree(self, url, text, color):
         """
@@ -299,12 +306,26 @@ class DomainMonitor:
         This method is called when the user wants to refresh the monitored domains.
         Only call this method in the Main class, not in the DomainMonitor class.
         """
-        self.stop_threads = True
-        self.threads = []
+        self.stop_event.set()
+        self.parent.after(50, self._finish_reload)
 
-        self.domains = self.load_domains()
+    def _finish_reload(self):
+        """
+        Finishes the reload process by clearing the Treeview and reloading the domains.
+        This method is called after a short delay to ensure that the threads are stopped before reloading.
+        """
+        self.threads.clear()
+        self.tree_items.clear()
         for item in self.tree.get_children():
             self.tree.delete(item)
-        self.tree_items.clear()
 
+        self.domains = self.load_domains()
+        for domain in self.domains:
+            url = domain.get("dominio", "Desconocido")
+            iid = self.tree.insert(
+                "", tk.END, text=url, values=("---", "---", "---"), tags=("black",)
+            )
+            self.tree_items[url] = iid
+
+        self.stop_event.clear()
         self.start_monitoring_threads()

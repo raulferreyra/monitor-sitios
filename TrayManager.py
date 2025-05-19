@@ -1,6 +1,8 @@
+import threading
 import pystray
 from PIL import Image
 from pystray import MenuItem as item
+from utils import IconManager
 
 
 class TrayManager:
@@ -18,8 +20,11 @@ class TrayManager:
             icon_path (str): Path to the icon image file.
         """
         self.app = app
+        self.icon_path = IconManager.resource_path(icon_path)
+        self.icon_image = Image.open(self.icon_path)
+
         self.tray_icon = None
-        self.icon_image = None
+        self._thread = None
 
         try:
             self.icon_image = Image.open(icon_path)
@@ -31,19 +36,21 @@ class TrayManager:
         Shows the tray icon in the system tray.
         This method creates the tray icon and sets up the menu items.
         """
-        if self.tray_icon is None and self.icon_image:
+        if self.tray_icon is None:
             menu = pystray.Menu(
                 item("Restaurar", self.app.show_window),
-                item("Salir", self.app.quit_app)
+                item("Salir",     self.app.quit_app)
             )
             self.tray_icon = pystray.Icon(
                 "us_monitor",
                 self.icon_image,
                 "US - Monitor de Sitios",
-                menu,
-                on_click=self.app.show_window
+                menu=menu
             )
-            self.tray_icon.run_detached()
+
+            self._thread = threading.Thread(
+                target=self.tray_icon.run, daemon=True)
+            self._thread.start()
 
     def stop_tray_icon(self):
         """
@@ -53,3 +60,12 @@ class TrayManager:
         if self.tray_icon:
             self.tray_icon.stop()
             self.tray_icon = None
+            self._thread = None
+
+    def hide_tray_icon(self):
+        """
+        Hides the tray icon without removing it from the system tray.
+        This method is called when the main window is restored from the tray.
+        """
+        if self.tray_icon:
+            self.tray_icon.visible = False

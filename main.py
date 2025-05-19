@@ -1,15 +1,17 @@
+import multiprocessing
+import threading
 import tkinter as tk
-import os
-import sys
+from About import AboutWindow
 from ConfigWindow import ConfigWindow
 from DomainMonitor import DomainMonitor
+from ErrorLog import ErrorLogWindow
 from TrayManager import TrayManager
-from utils import Tooltip, UpdateChecker
+from utils import IconManager, Tooltip, UpdateChecker
 
 # =========================
-# Monitor de Sitios v1.0.0
+# Monitor de Sitios v1.1.0
 # =========================
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __project_name__ = "US - Monitor de Sitios"
 __author__ = "URAS - Elemento"
 __license__ = "MIT"
@@ -30,8 +32,7 @@ class App:
         This method is called when the user clicks on the tray icon.
         It restores the main window and stops the tray icon.
         """
-        self.root.after(0, self.root.deiconify)
-        self.tray.stop_tray_icon()
+        self.root.deiconify()
 
     def quit_app(self, _=None):
         """
@@ -39,14 +40,15 @@ class App:
         This method is called when the user selects "Quit" from the tray icon menu.
         """
         self.tray.stop_tray_icon()
-        self.root.quit()
+        self.root.destroy()
 
     def reload_monitor(self):
         """
         Reloads the domain monitor when the user clicks the refresh button.
         This method is called when the user clicks the refresh button in the main window.
         """
-        DomainMonitor(self.root, self.domain_monitor.config_path).reload()
+        threading.Thread(target=self.domain_monitor.reload,
+                         daemon=True).start()
 
     def open_config(self):
         """
@@ -54,6 +56,20 @@ class App:
         This method is called when the user clicks the config button in the main window.
         """
         ConfigWindow(self.root, self.domain_monitor)
+
+    def open_about(self):
+        """
+        Opens the about window when the user clicks the about button.
+        This method is called when the user clicks the about button in the main window.
+        """
+        AboutWindow(self.root)
+
+    def open_errors(self):
+        """
+        Opens the error log window when the user clicks the error log button.
+        This method is called when the user clicks the error log button in the main window.
+        """
+        ErrorLogWindow(self.root)
 
     def hide_window(self):
         """
@@ -85,10 +101,20 @@ class App:
         refresh_button.grid(row=0, column=1, padx=5)
         Tooltip(refresh_button, "Actualizar vista")
 
+        error_button = tk.Button(header, text="⛔", font=("Arial", 14),
+                                 relief="flat", bd=0, command=self.open_errors)
+        error_button.grid(row=0, column=2, padx=5)
+        Tooltip(error_button, "ver errores")
+
         config_button = tk.Button(header, text="⚙️", font=("Arial", 14),
                                   relief="flat", bd=0, command=self.open_config)
-        config_button.grid(row=0, column=2, padx=5)
+        config_button.grid(row=0, column=3, padx=5)
         Tooltip(config_button, "Abrir configuración")
+
+        about_button = tk.Button(header, text="❓", font=("Arial", 14),
+                                 relief="flat", bd=0, command=self.open_about)
+        about_button.grid(row=0, column=4, padx=5)
+        Tooltip(about_button, "Acerca de")
 
         self.domain_monitor = DomainMonitor(self.root)
 
@@ -102,26 +128,13 @@ class App:
         self.root.title(f"{__project_name__} - v{__version__}")
         self.root.geometry("800x600")
         self.root.resizable(False, False)
-        self.root.attributes("-toolwindow", True)
+        self.root.attributes("-toolwindow", False)
         self.root.protocol("WM_DELETE_WINDOW", self.hide_window)
 
         self.tray = TrayManager(self)
+        self.tray.show_tray_icon()
         self.create_widgets()
         UpdateChecker(__version__)
-
-
-def resource_path(relative_path):
-    """
-    Get the absolute path to the resource, works for dev and PyInstaller.
-    Args:
-        relative_path (str): The relative path to the resource.
-    """
-    try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
 
 
 if __name__ == "__main__":
@@ -129,7 +142,9 @@ if __name__ == "__main__":
     Main function to run the application.
     This function creates the main Tkinter window and starts the application.
     """
+    multiprocessing.freeze_support()
+
     root = tk.Tk()
-    root.iconbitmap(resource_path("favicon.ico"))
+    root.iconbitmap(IconManager.resource_path("favicon.ico"))
     app = App(root)
     root.mainloop()

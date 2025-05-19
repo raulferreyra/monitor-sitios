@@ -1,7 +1,7 @@
 {
-    "latest_version": "1.0.0",
+    "latest_version": "1.1.0",
     "download_url": "https://monitor.urasweb.com/downloads/monitor-sitios.exe",
-    "changelog": "First version with domain monitoring and scrapping http.",
+    "changelog": "• Fixed issue with view reload: avoids duplicating the tree when refreshing the view.\n• Fixed issue when saving sites: sites are now immediately visible in the app without needing to reload or reopen it.\n• Added views for Errorlog and About",
     "description": "Monitor your favorite websites and get notified when they change.",
     "author": "URAS - Elemento",
     "author_url": "https://urasweb.com",
