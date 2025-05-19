@@ -1,4 +1,4 @@
-Version 1.1.0 - August 18, 2025
+Version 1.1.0 - May 18, 2025
 
 - Fixed issue with view reload:
   Prevents the tree from duplicating when refreshing the interface.
@@ -12,6 +12,6 @@ Version 1.1.0 - August 18, 2025
 - Added Error View:
   A class to create a window that displays the error log of the application.
 
-Version 1.0.0 - August 15, 2025
+Version 1.0.0 - May 15, 2025
 
 - First version with domain monitoring and scrapping http.
