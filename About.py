@@ -32,7 +32,7 @@ class AboutWindow(tk.Toplevel):
             "Developed by URAS - Elemento\n"
             "Visit: https://urasweb.com\n"
             "Support development: https://liberapay.com/elemento/\n"
-            "NOTE: Make sure to review your domain's terms of service and third-party connection policies."
+            "NOTE: Make sure to review your domain's terms of service\nand third-party connection policies."
         )
         desc_label = tk.Label(self, text=desc, justify="center")
         desc_label.pack(pady=5)
